@@ -13,7 +13,9 @@ const server = http.createServer((req, res) => {
   let name = decodeURIComponent((req.url || '/').split('?')[0]);
   if (name === '/' || name === '') name = '/index.html';
   if (name === '/healthz') { res.writeHead(200); return res.end('ok'); }
-  const file = path.join(PUB, path.basename(name));
+  let file = path.join(PUB, path.basename(name));
+  if (!fs.existsSync(file)) file = path.join(__dirname, path.basename(name));
+  if (path.basename(file) === 'server.js' || path.basename(file) === 'package.json') file = path.join(PUB, 'nope');
   fs.readFile(file, (err, data) => {
     if (err) { res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' }); return res.end('Не найдено'); }
     res.writeHead(200, { 'Content-Type': TYPES[path.extname(file)] || 'application/octet-stream', 'Cache-Control': 'no-cache' });
