@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Хапуги: подземелье</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ruslan+Display&family=Kurale&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE: озорная сказка, ярмарочная, с подковыркой
+   IDEA: расписной фарфор в духе гжели: стол как кобальтовый поднос, карты как белые изразцы
+   PICTURE: сама партия: арена боя с монстром и кубиком, рука карт, соперники
+   COLOUR and TYPE: кобальт и белый фарфор, красный акцент, золото для сокровищ; Ruslan Display + Kurale + Rubik
+   LAYOUT: соперники сверху, арена и журнал посередине, твоя экипировка и рука снизу */
+:root{color-scheme:dark;--bg:#0c2463;--bg2:#143a8f;--bg3:#1d4cae;--ink:#f4f7ff;--mute:#bccbf0;--paper:#fbfcff;--cob:#1b4cc0;--cobd:#0c2a78;--cobl:#9db9f2;--acc:#e5402e;--gold:#f2b43c;--cink:#112a68}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;color:var(--ink);font:16px/1.5 Rubik,system-ui,sans-serif;overflow-x:clip;min-height:100vh;background:radial-gradient(circle at 20px 20px,#ffffff14 3px,transparent 4px) 0 0/40px 40px,radial-gradient(ellipse at 50% 20%,#1a46a8 0,var(--bg) 70%) fixed}
+h1,.big,.pn{font-family:Kurale,Georgia,serif;font-weight:400}
+h1{font-family:'Ruslan Display',Kurale,serif;margin:0;font-size:48px;line-height:1.05;color:#fff;text-shadow:3px 3px 0 var(--acc)}
+h2{font-family:Kurale,Georgia,serif;font-weight:400;margin:0}
+button,input{font:inherit}
+button{cursor:pointer;border:0;border-radius:10px;min-height:44px;padding:8px 16px;background:var(--bg3);color:var(--ink);box-shadow:inset 0 -3px 0 #0003}
+button:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+button:disabled{opacity:.4;cursor:not-allowed}
+.go{background:var(--acc);color:#fff;font-weight:700}
+input{min-height:44px;font-size:16px;border-radius:10px;border:2px solid var(--cobl);padding:6px 12px;background:#fff;color:var(--cink)}
+.top{display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px;padding:16px max(3vw,12px) 4px;max-width:1240px;margin:0 auto}
+.top p{margin:0;color:var(--mute)}
+.top .sp{margin-left:auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.tag{font-size:14px;background:#ffffff1a;border-radius:999px;padding:4px 12px}
+summary{cursor:pointer;color:var(--gold);min-height:32px}
+details ul{margin:6px 0;padding-left:20px;color:var(--mute);font-size:15px;max-width:70ch}
+.wrap{max-width:1240px;margin:0 auto;padding:8px max(3vw,12px) 32px;display:grid;gap:14px}
+.opps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.opp{background:var(--bg2);border-radius:14px;padding:10px 12px;border:2px solid #ffffff22}
+.opp.now,.me.now{border-color:var(--gold);box-shadow:0 0 0 3px #f2b43c44}
+.opp .pn{font-size:22px;display:flex;justify-content:space-between;gap:8px}
+.lv{color:var(--gold)}
+.stat{font-size:14px;color:var(--mute)}
+.chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.chip{font-size:13px;background:#ffffff1c;border-radius:6px;padding:1px 7px}
+.chip.rc{background:#fff;color:var(--cink)}
+.table{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,300px);gap:14px;background:var(--bg2);border-radius:20px;padding:14px;border:3px solid #fff;box-shadow:inset 0 0 0 3px var(--cob),0 12px 30px #0007}
+.decks{display:flex;flex-direction:column;gap:10px}
+.back{width:92px;height:122px;border-radius:10px;display:grid;place-items:center;text-align:center;font:16px/1.1 Kurale,serif;padding:6px;border:3px solid #fff;box-shadow:3px 3px 0 #0005,6px 6px 0 #0003}
+.back.door{background:radial-gradient(circle,#fff 0 3px,transparent 4px) 0 0/16px 16px,var(--cob);color:#fff}
+.back.tre{background:radial-gradient(circle,#fff8 0 3px,transparent 4px) 0 0/16px 16px,var(--gold);color:var(--cink)}
+.back span{background:#fff;color:var(--cink);border-radius:8px;padding:4px 6px;box-shadow:0 2px 0 #0003}
+.back small{display:block;font:12px Rubik,sans-serif}
+.arena{min-height:320px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center}
+.arena h2{font-size:30px;line-height:1.1;text-wrap:balance}
+.arena p{margin:0;color:var(--mute);max-width:52ch}
+.vs{display:flex;align-items:center;gap:18px;flex-wrap:wrap;justify-content:center}
+.score{font:56px/1 Kurale,serif}
+.score.win{color:#7ff0b8}.score.lose{color:#ff8a7a}
+.side{display:flex;flex-direction:column;align-items:center;gap:4px;max-width:180px}
+.row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.log{background:#081a4a;border-radius:12px;padding:10px 12px;font-size:14px;max-height:360px;overflow:auto;display:flex;flex-direction:column;gap:4px}
+.log div{color:var(--mute)}.log div:first-child{color:var(--ink)}
+.log b{color:#fff;font-weight:500}
+.me{background:var(--bg2);border-radius:18px;padding:12px 14px;border:2px solid #ffffff22;display:grid;gap:10px}
+.mehead{display:flex;flex-wrap:wrap;gap:6px 22px;align-items:baseline}
+.mehead .big{font-size:30px}
+.slots{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px}
+.slot{flex:none;width:150px;min-height:120px;border:2px dashed #ffffff40;border-radius:12px;display:grid;place-items:center;color:var(--mute);font-size:14px;text-align:center;padding:6px}
+.hand{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 12px;scroll-snap-type:x proximity}
+.hand>*{scroll-snap-align:start}
+h2.sec{font-size:24px}
+.card{flex:none;width:156px;background:var(--paper);color:var(--cink);border-radius:12px;overflow:hidden;box-shadow:inset 0 0 0 3px var(--cob),inset 0 0 0 6px #fff,inset 0 0 0 7px var(--cobl),0 6px 16px #0006;display:flex;flex-direction:column;font-size:13px;line-height:1.3;padding:7px}
+.card .ch{display:flex;justify-content:space-between;gap:4px;padding:5px 7px;border-radius:7px 7px 0 0;align-items:flex-start;color:#fff;background:var(--cob)}
+.card.tre .ch{background:var(--gold);color:var(--cink)}
+.card b{font:17px/1.05 Kurale,serif;overflow-wrap:break-word}
+.card i{font:normal 20px/1 Kurale,serif;background:#fff;color:var(--cink);border-radius:50%;min-width:30px;height:30px;display:grid;place-items:center;flex:none}
+.card .art{height:70px;display:grid;place-items:center;background:radial-gradient(circle at 10px 10px,#1b4cc022 2px,transparent 3px) 0 0/20px 20px}
+.card svg{height:64px;width:64px}
+.card .kind{font-size:12px;color:#4a63a8;padding:4px 4px 0}
+.card p{margin:2px 4px 4px;flex:1}
+.card small{display:block;margin:0 4px 6px;color:#b0281a;font-size:12px}
+.card .val{color:#4a63a8}
+.ca{display:flex;flex-wrap:wrap;gap:4px;padding:2px 0 0}
+.ca button{min-height:34px;padding:4px 8px;font-size:13px;background:var(--cink);color:#fff;flex:1 1 auto;border-radius:8px}
+.ca button.hot{background:var(--acc)}
+.flip{animation:flip .5s ease-out}
+@keyframes flip{from{transform:perspective(600px) rotateY(90deg) scale(.9)}to{transform:none}}
+.dicebox{display:flex;align-items:center;gap:14px;justify-content:center;flex-wrap:wrap}
+.scene{width:70px;height:70px;perspective:420px}
+.die{width:70px;height:70px;position:relative;transform-style:preserve-3d;transform:rotateX(var(--rx)) rotateY(var(--ry))}
+.die.anim{animation:roll 1.3s cubic-bezier(.15,.75,.3,1)}
+@keyframes roll{0%{transform:translateY(-60px) rotateX(calc(var(--rx) + 1080deg)) rotateY(calc(var(--ry) + 720deg))}60%{transform:translateY(6px) rotateX(calc(var(--rx) + 60deg)) rotateY(calc(var(--ry) + 30deg))}100%{transform:rotateX(var(--rx)) rotateY(var(--ry))}}
+.face{position:absolute;inset:0;background:#fff;border:3px solid var(--cob);border-radius:12px;display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);padding:8px;gap:2px;backface-visibility:hidden}
+.face span{display:grid;place-items:center}
+.face span.p::after{content:'';width:12px;height:12px;border-radius:50%;background:var(--cob)}
+.face.f1 span.p::after{background:var(--acc);width:16px;height:16px}
+.dres{font:22px/1.2 Kurale,serif}
+@media (prefers-reduced-motion:reduce){.flip,.die.anim{animation:none}}
+.over{position:fixed;inset:0;background:#000a;display:grid;place-items:center;z-index:9;padding:16px;overflow:auto}
+.over[hidden]{display:none}
+.over>div{background:var(--bg2);border-radius:20px;padding:24px;text-align:center;width:min(480px,100%);border:3px solid #fff;box-shadow:inset 0 0 0 3px var(--cob)}
+.over h2{font-size:40px;margin:0 0 8px}
+.over .col{display:grid;gap:10px;text-align:left;margin-top:12px}
+.over label{font-size:14px;color:var(--mute)}
+.code{font:700 44px/1 Rubik,system-ui,sans-serif;letter-spacing:.12em;color:var(--gold)}
+.plist{list-style:none;padding:0;margin:6px 0;display:grid;gap:6px}
+.plist li{background:#ffffff14;border-radius:8px;padding:8px 12px}
+.empty{color:var(--mute);font-size:14px;padding:20px 4px}
+@media(max-width:900px){.table{grid-template-columns:auto minmax(0,1fr)}.log{grid-column:1/-1;max-height:180px}}
+@media(max-width:600px){h1{font-size:36px}.opps{grid-template-columns:minmax(0,1fr)}.opp .chips{display:none}.table{grid-template-columns:minmax(0,1fr)}.decks{flex-direction:row;justify-content:center}.back{width:84px;height:64px}.score{font-size:42px}.card,.slot{width:140px}}
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>Хапуги</h1>
+  <p>Подземелье, где всё хорошее лежит в чужом рюкзаке.</p>
+  <div class="sp"><span class="tag" id="mode">Одиночная игра</span><button data-a="menu">Меню</button></div>
+</header>
+<main class="wrap">
+  <details>
+    <summary>Как играть</summary>
+    <ul>
+      <li>Первый, кто дойдёт до 10 уровня, побеждает. Десятый уровень берётся только победой над монстром.</li>
+      <li>Свой ход: надень вещи, стань расой или классом, затем выбей дверь. Монстр дерётся с тобой сразу, проклятие срабатывает на тебе.</li>
+      <li>Сила = уровень + бонусы вещей. Побеждаешь, если сила строго больше силы монстра: получаешь уровни и сокровища.</li>
+      <li>Не тянешь? Сыграй разовые карты, позови кого-нибудь на помощь (заберёт половину добычи) или беги: на кубике нужно 5+.</li>
+      <li>Большую вещь можно носить только одну (оркам можно сколько угодно). Карты-кубики перебрасывают неудачный побег или добавляют бросок к силе.</li>
+      <li>Если монстра за дверью не было: подерись с монстром из руки или обшарь комнату. В конце хода в руке не больше 5 карт.</li>
+      <li>В чужом бою кидай усилители и зелья на монстра. Каждые 1000 золотых от продажи дают +1 уровень.</li>
+      <li>В игре 50 900 разных карт. Каждая партия собирает свою колоду: все базовые карты и 420 случайных из генератора.</li>
+    </ul>
+  </details>
+  <section class="opps" id="opps"></section>
+  <section class="table">
+    <div class="decks" id="decks"></div>
+    <div class="arena" id="arena"></div>
+    <div class="log" id="log" aria-live="polite"></div>
+  </section>
+  <section class="me" id="me"></section>
+  <section>
+    <h2 class="sec">Рука</h2>
+    <div class="hand" id="hand"></div>
+  </section>
+</main>
+<div class="over" id="over" hidden></div>
+<div class="over" id="lobby"></div>
+<script>
+{
+const rnd=n=>Math.floor(Math.random()*n);
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]]}return a};
+const rm=(a,x)=>{const i=a.indexOf(x);if(i>=0)a.splice(i,1);return i>=0};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const $=id=>document.getElementById(id);
+const mulberry=a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+
+/* ================= КАРТЫ: базовые ================= */
+const M=(n,lvl,lv,tr,bad,txt,badTxt,o={})=>({type:'monster',deck:'door',n,lvl,lv,tr,bad,txt,badTxt,x:o.x||1,vs:o.vs||null,chill:o.chill||0});
+const C=(n,bad,txt,x=1)=>({type:'curse',deck:'door',n,bad,txt,x});
+const MOD=(n,b,tr,txt,x=1)=>({type:'mod',deck:'door',n,b,tr,txt,x});
+const RACE_N={orc:'Орк',elf:'Эльф',cat:'Кот-оборотень',gob:'Гоблин'};
+const CLASS_N={bard:'Бард',cook:'Повар',priest:'Жрец',hunter:'Охотник'};
+const ABIL={orc:'Носит сколько угодно больших вещей. В руке до 6 карт.',elf:'+1 уровень, когда помогает победить монстра.',cat:'Убегает на 4+ вместо 5+.',gob:'Продаёт вещи в полтора раза дороже.',bard:'В своём бою сбрасывает до 3 карт из руки: каждая даёт +2.',cook:'Его разовые карты дают на +2 больше.',priest:'Проклятие на нём отменяется: сам сбрасывает самую дешёвую карту.',hunter:'+3 к силе против монстров силой 10 и выше.'};
+const VS_N={orc:'Оркам',elf:'Эльфам',cat:'Котам-оборотням',gob:'Гоблинам',bard:'Бардам',cook:'Поварам',priest:'Жрецам',hunter:'Охотникам'};
+const RA=(n,key)=>({type:'race',deck:'door',n,key,txt:ABIL[key],x:1});
+const CL=(n,key)=>({type:'class',deck:'door',n,key,txt:ABIL[key],x:1});
+const G=(n,slot,b,v,txt,o={})=>({type:'gear',deck:'tre',n,slot,b,v,txt,hands:o.hands||(slot==='hand'?1:0),run:o.run||0,big:!!o.big,x:o.x||1});
+const SH=(n,b,v,txt,x=1)=>({type:'shot',deck:'tre',n,b,v,txt,x});
+const LV=(n,txt='+1 уровень. Десятый так не взять.')=>({type:'level',deck:'tre',n,v:0,txt,x:1});
+const ES=(n,v,txt,x=1)=>({type:'escape',deck:'tre',n,v,txt,x});
+const DTXT={reroll:'Если побег не удался, кубик перебрасывается сам.',luck:'В бою брось кубик: выпавшее добавь своей стороне (или монстру в чужом бою).'};
+const DI=(n,dice,v,x=1)=>({type:'dice',deck:'tre',n,dice,v,txt:DTXT[dice],x});
+
+const BASE=[
+ M('Летучий будильник',1,1,1,{k:'hand',n:1},'Звенит в самый неподходящий момент. То есть всегда.','Проспал: сбрось 1 карту',{x:2}),
+ M('Абобус обыкновенный',2,1,1,{k:'hand',n:1},'Никто не знает, кто он. Но все его боятся.','Абобнул: сбрось 1 карту'),
+ M('Кот, который орёт',3,1,1,{k:'slot',s:'head'},'АААААААА. Это всё, что он говорит.','Оглушил: теряешь головной убор',{vs:{cat:-3}}),
+ M('Скуф с пультом',5,1,2,{k:'slot',s:'armor'},'Лежит на диване с 2007 года. Встал ради тебя.','Отнял свитер: «тебе не идёт»'),
+ M('Душнила 80-го уровня',8,1,2,{k:'hand',n:3},'«Вообще-то, если быть точным…»','Объяснил, почему ты неправ: сбрось 3 карты',{vs:{priest:3}}),
+ M('Альтушка-некромантка',9,1,2,{k:'race'},'Чёрная чёлка, чёрная магия.','Сделала тебя своим фанатом: теряешь расу'),
+ M('Тёща на самокате',11,1,3,{k:'best'},'Приехала без предупреждения. Надолго.','Забрала лучшую вещь «на время»'),
+ M('Гигачад из качалки',15,2,4,{k:'lvl',n:2},'Квадратный подбородок, квадратные кулаки.','Сделал из тебя гантелю: −2 уровня',{chill:3}),
+ M('Обидчивый гриб',1,1,1,{k:'lvl',n:1},'Обижается на всё. Особенно на тебя.','Затаил обиду: −1 уровень',{x:2}),
+ M('Ёжик в тумане',1,1,1,{k:'small'},'Ищет лошадку. Нашёл тебя.','Уносит мелкую вещь'),
+ M('Носок-мимик',2,1,1,{k:'slot',s:'feet'},'Притворялся парой. Пары у него нет.','Съедает твою обувь'),
+ M('Гоблин-оптимизатор',2,1,1,{k:'best'},'Сократит издержки. Твои.','Оптимизирует твою лучшую вещь',{x:2,vs:{gob:-2}}),
+ M('Крыса-коллектор',3,1,1,{k:'hand',n:2},'Пришла за долгом, которого ты не брал.','Изымает 2 карты из руки',{x:2}),
+ M('Леший-навигатор',3,1,1,{k:'chaos'},'Всегда знает дорогу. Не туда.','Бросок кубика хаоса'),
+ M('Бухгалтер-некромант',4,1,2,{k:'lvl',n:1},'Поднимает мертвецов и квартальные отчёты.','Списывает 1 уровень'),
+ M('Самовар-берсерк',4,1,2,{k:'slot',s:'hand'},'Кипит от злости. Буквально.','Обжигает: теряешь вещь из рук',{vs:{cook:-3}}),
+ M('Слизень-философ',5,1,2,{k:'slot',s:'head'},'Спросит «а зачем тебе шлем?», и шлема нет.','Растворяет головной убор'),
+ M('Голодный шкаф',6,1,2,{k:'slot',s:'armor'},'Скрипит дверцей. Облизывается полкой.','Съедает твою броню'),
+ M('Призрак бывшего',7,1,2,{k:'hand',n:3},'Пишет «привет, как дела» в три часа ночи.','Сбрось 3 карты от расстройства',{vs:{bard:-3}}),
+ M('Тролль из комментариев',8,1,2,{k:'lvl',n:2},'Не согласен. С чем? Не важно.','Затроллил: −2 уровня',{vs:{elf:3}}),
+ M('Котопаук',9,1,2,{k:'slot',s:'hand'},'Восемь лап, и все хотят на ручки.','Утаскивает вещь из рук',{vs:{cat:-4}}),
+ M('Бабка с тапком',10,1,3,{k:'lvl',n:2},'Видела, как ты не надел шапку.','Отшлёпала: −2 уровня',{vs:{cat:5}}),
+ M('Медведь на самокате',11,1,3,{k:'best'},'Дзынь-дзынь, уйди с дороги.','Сбивает с тебя лучшую вещь',{chill:2}),
+ M('Голем бюрократии',12,2,3,{k:'all'},'Нужна справка о том, что ты жив. В трёх копиях.','Изымает всю экипировку',{vs:{gob:5}}),
+ M('Кикимора-риелтор',13,2,3,{k:'race'},'Продаст тебе болото с видом на болото.','Отбирает расу (и прописку)'),
+ M('Лич на пенсии',14,2,3,{k:'lvl',n:2},'Рассказывает про молодость. Четыреста лет подряд.','Заговорил до −2 уровней',{chill:3}),
+ M('Дракон-кредитор',16,2,4,{k:'all'},'Проценты капают даже во сне.','Забирает всю экипировку в счёт долга',{chill:4,vs:{hunter:2}}),
+ M('Утка апокалипсиса',18,2,5,{k:'lvl',n:3},'Кря. Это было последнее, что ты слышал.','Кря: −3 уровня',{vs:{elf:4}}),
+ C('Ответ «ок»',{k:'hiccup'},'Тебе ответили «ок». Ты в смятении: −3 к силе в следующем бою.'),
+ C('Лаг на 999 пинге',{k:'hand',n:2},'Пока грузилось, две карты потерялись.'),
+ C('Бан в чате',{k:'class'},'Модератор не в духе. Теряешь класс.'),
+ C('Понедельник',{k:'lvl',n:1},'Он наступил. Опять. −1 уровень.'),
+ C('Сглаз соседки',{k:'lvl',n:1},'«Ишь, нарядился». −1 уровень.'),
+ C('Ржавчина',{k:'slot',s:'armor'},'Твоя броня рассыпается в рыжую пыль.'),
+ C('Унесло ветром',{k:'slot',s:'head'},'Головной убор улетел в сторону моря.'),
+ C('Мозоль',{k:'slot',s:'feet'},'Обувь снята навсегда.'),
+ C('Дырявые карманы',{k:'hand',n:2},'Две карты из руки выпали где-то по дороге.'),
+ C('Икота',{k:'hiccup'},'−3 к силе в следующем бою.'),
+ C('Смена паспорта',{k:'race'},'Ты больше не тот, кем был. Теряешь расу.'),
+ C('Увольнение',{k:'class'},'По собственному желанию. Не твоему. Теряешь класс.'),
+ C('Мелкая кража',{k:'small'},'Пропала самая мелкая вещь. Кто-то хихикает.'),
+ C('Кубик хаоса',{k:'chaos'},'Брось кубик: 1–2 −1 уровень, 3–4 лучшая вещь, 5 две карты, 6 пронесло.',2),
+ MOD('Злющий',5,1,'Сыграй на любого монстра: +5 к силе, +1 сокровище.',2),
+ MOD('Древний',10,2,'Сыграй на любого монстра: +10 к силе, +2 сокровища.'),
+ MOD('Сонный',-3,0,'Сыграй на любого монстра: −3 к силе.',2),
+ MOD('Детёныш',-5,-1,'Сыграй на любого монстра: −5 к силе, −1 сокровище.'),
+ RA('Орк-качок','orc'),RA('Эльф-хиппи','elf'),RA('Кот-оборотень','cat'),RA('Гоблин-барыга','gob'),
+ CL('Бард-задира','bard'),CL('Повар-алхимик','cook'),CL('Жрец-бухгалтер','priest'),CL('Охотник-зануда','hunter'),
+ G('Кастрюля отваги','head',1,200,'Звенит при ударе. Враги смеются, ты нет.'),
+ G('Ушанка мудреца','head',2,400,'Одно ухо вверх, одно вниз. Баланс.'),
+ G('Корона самозванца','head',3,600,'Никто не проверял документы.'),
+ G('Бабушкин свитер','armor',1,200,'Колется, но защищает от холода и стрел.'),
+ G('Кольчуга из крышек','armor',2,400,'Собиралась три года.'),
+ G('Латы в ипотеку','armor',3,600,'Твои через 25 лет.',{big:true}),
+ G('Самовар-доспех','armor',4,800,'Тяжёлый, горячий, с краником.',{big:true}),
+ G('Тапки-скороходы','feet',1,300,'+1 к броску на побег.',{run:1}),
+ G('Сапоги пинка','feet',2,400,'Отлично открывают двери.'),
+ G('Ржавая ложка','hand',1,100,'Копать, есть, угрожать.'),
+ G('Масляный кинжал','hand',1,200,'Мажет врагов. По хлебу тоже.'),
+ G('Сковорода судьбы','hand',2,300,'Бьёт громко и наверняка.'),
+ G('Щит из двери','hand',2,300,'Сорвал с петель по дороге.'),
+ G('Палочка с севшей батарейкой','hand',2,400,'Иногда искрит.'),
+ G('Двуручная швабра','hand',3,400,'Моет полы монстрами.',{hands:2,big:true}),
+ G('Бензопила сомнений','hand',4,600,'Пилит и тебя, и врагов, морально.',{hands:2,big:true}),
+ G('Таран из шкафа','hand',5,700,'Шкаф был против.',{hands:2,big:true}),
+ SH('Зелье храбрости',3,200,'Разовая: +3 любой стороне боя. Вкус как у компота.',2),
+ SH('Банка злых пчёл',5,300,'Разовая: +5 любой стороне боя. Не открывать в помещении.'),
+ SH('Граната с конфетти',2,100,'Разовая: +2 любой стороне боя. Праздник!',2),
+ SH('Подозрительный пирожок',4,200,'Разовая: +4 любой стороне боя. С чем он, лучше не знать.'),
+ LV('Ачивка «Просто зашёл»'),LV('Донат самому себе'),LV('Взятка ведущему'),LV('Свиток «Я молодец»'),LV('Опыт из-под дивана'),
+ ES('Дымовая шашка',200,'Сбеги из боя без броска кубика.',2),
+ DI('Шулерский кубик','reroll',200,2),DI('Кубик удачи','luck',200,2)
+];
+const BASE_ALL=BASE.flatMap(d=>Array.from({length:d.x},()=>d)).map((d,i)=>({...d,id:i}));
+const NB=BASE_ALL.length,TOTAL=50900;
+
+/* ================= КАРТЫ: генератор ================= */
+const ADJ_END={'ый':['ый','ая','ое','ые'],'ой':['ой','ая','ое','ые']};
+function forms(w){const[st,e]=w.split('-');if(e==='ий'){const l=st.slice(-1);if('кгх'.includes(l))return[st+'ий',st+'ая',st+'ое',st+'ие'];if('щчшж'.includes(l))return[st+'ий',st+'ая',st+'ее',st+'ие'];return[st+'ий',st+'яя',st+'ее',st+'ие']}return ADJ_END[e].map(x=>st+x)}
+const G4={m:0,f:1,n:2,p:3};
+const adj=(w,g)=>forms(w)[G4[g]];
+const nouns=s=>s.split(',').map(x=>{const[w,g]=x.split(':');return{w,g}});
+const L=s=>s.split('|');
+const MADJ=L('Злобн-ый|Ржав-ый|Сонн-ый|Бешен-ый|Плюшев-ый|Налогов-ый|Квантов-ый|Офисн-ый|Болотн-ый|Хрустальн-ый|Волосат-ый|Обиженн-ый|Голодн-ый|Ворчлив-ый|Картонн-ый|Дачн-ый|Радиоактивн-ый|Застенчив-ый|Пузат-ый|Гигантск-ий|Липк-ий|Летающ-ий|Подвальн-ый|Маринованн-ый|Блестящ-ий|Лохмат-ый|Колюч-ий|Уныл-ый|Кислотн-ый|Чугунн-ый|Резинов-ый|Бородат-ый|Полосат-ый|Мохнат-ый|Говорящ-ий|Крошечн-ый|Хромированн-ый|Простуженн-ый|Неуклюж-ий|Самодовольн-ый|Влюблённ-ый|Зомбированн-ый|Карманн-ый|Злопамятн-ый|Деревянн-ый|Лунн-ый|Бумажн-ый|Жадн-ый|Смешн-ой|Ночн-ой|Кринжов-ый|Базов-ый|Душн-ый|Токсичн-ый|Хайпов-ый|Вайбов-ый|Залипш-ий|Олдскульн-ый|Лагающ-ий|Забаненн-ый|Прокачанн-ый|Лампов-ый|Рофлов-ый|Флексов-ый|Неадекватн-ый');
+const MNOUN=nouns('Самовар:m,Гусь:m,Тролль:m,Слизень:m,Бухгалтер:m,Шкаф:m,Гоблин:m,Голем:m,Кабан:m,Носорог:m,Дракончик:m,Упырь:m,Барсук:m,Пылесос:m,Кактус:m,Чайник:m,Огурец:m,Енот:m,Кобольд:m,Скелет:m,Вампир:m,Вурдалак:m,Призрак:m,Тостер:m,Пельмень:m,Таракан:m,Хомяк:m,Леший:m,Сантехник:m,Мимик:m,Ёж:m,Краб:m,Лось:m,Пингвин:m,Холодильник:m,Карлик:m,Бобёр:m,Голубь:m,Червяк:m,Банкир:m,Улитка:f,Жаба:f,Кикимора:f,Медуза:f,Мумия:f,Ведьма:f,Гарпия:f,Моль:f,Курица:f,Капуста:f,Табуретка:f,Бабка:f,Русалка:f,Сосулька:f,Гидра:f,Плесень:f,Сколопендра:f,Химера:f,Крыса:f,Креветка:f,Мышь:f,Пиявка:f,Ящерица:f,Тыква:f,Чудище:n,Облако:n,Яйцо:n,Пугало:n,Зеркало:n,Привидение:n,Желе:n,Кресло:n,Чучело:n,Корыто:n,Скуф:m,Абобус:m,Гигачад:m,Зумер:m,Бумер:m,Стример:m,Тиктокер:m,Душнила:m,Токсик:m,Флексер:m,Сигма-бой:m,Кот-сосиска:m,Шлёпа:m,Альтушка:f,Нпс:m,Админ:m,Тролль-хейтер:m,Блогер-миллионник:m,Кринж-гоблин:m,Донатер:m,Бот-спамер:m,Бабуля-геймер:f,Тёща-стримерша:f');
+const MSUF=L('|из подвала|с понедельника|в тапках|на пенсии|из налоговой|с гармошкой|без прописки|на самокате|из соседнего подъезда|с ипотекой|с дипломом|в отпуске|из бабушкиного сундука|на диете|после спортзала|из интернета|из болота|из холодильника|с моторчиком|в депрессии|с плохим вайфаем|в розовом|из прошлого|на минималках|в шлеме из кастрюли|с бензопилой|из шестого измерения|по скидке|с котомкой|из сериала|с понтами|с пультом|80-го уровня|из комментов|на чилле|на вайбе|без регистрации и СМС|с вопросом «можно спросить?»|с лапками|из тиктока|с донатами|в режиме энергосбережения|после ребута|на расслабоне|из группы в вотсапе|с кольцевой лампой|с голосовыми по пять минут|в поисках вайфая|с прокачанным флексом|в кепке набекрень|из соседнего чата|с видом «я всё понял»|на кортах|с лутбоксом|в бане|за 300 лайков');
+const MFL=L('Пахнет как старые носки тролля.|Пришёл без приглашения и не уйдёт.|Смотрит на твой рюкзак с нежностью.|Уже съел двух героев. На завтрак.|Говорит, что он «вообще-то добрый».|Его мама думает, что он врач.|Работает без выходных и без совести.|Пишет жалобы на героев.|Не любит, когда его называют монстром.|Устроился в подземелье по знакомству.|Ведёт блог о героях, которых победил.|Хочет обнимашек. Зубами.|Ждал тебя с прошлого вторника.|Носит с собой справку о бессмертии.|Видит тебя насквозь. И твои карманы тоже.|Ни разу не проигрывал. По его словам.|Слишком громко дышит.|Считает этот коридор своим.|Пришёл за твоей шмоткой, а уйдёт с тобой.|Улыбается. Это плохой знак.|Играет на нервах лучше, чем на гуслях.|Знает твой пароль от вайфая.|Не спал три дня и очень зол.|Пришёл со своей вилкой.|Называет тебя «пирожочек».|Это база.|Ой, всё.|Не баг, а фича.|Говорит «ну крч» перед каждым ударом.|Подпишись, а то укусит.|Лапки. У него лапки. И зубы.|Ставит лайк, забирает шмот.|Это не кринж, это стиль.|Сначала добейся.|Я тебя запомнил. И твой лут тоже.|Мы вам перезвоним. Никогда.|Пришёл на вайбе, уйдёт с твоим лутом.|Сидит на чилле, бьёт на рофле.|Отправил тебе голосовое на 8 минут.|Скинул тебе мем в 4 утра.|Ждёт, когда ты лагнёшь.|Посмотрел твой профиль. Не впечатлён.|Записывает тиктоки про твоё поражение.|Без шуток: это фиаско, братан.|Ачивка «Встретить его» получена.|Уровень душноты: максимальный.|Ушёл в закат. Вернулся с дубиной.');
+const BADS=[
+ [[{k:'hand',n:1},'Сбрось 1 карту'],[{k:'lvl',n:1},'−1 уровень'],[{k:'slot',s:'feet'},'Теряешь обувь'],[{k:'slot',s:'head'},'Теряешь головной убор'],[{k:'small'},'Теряешь мелкую вещь']],
+ [[{k:'slot',s:'armor'},'Теряешь броню'],[{k:'slot',s:'hand'},'Теряешь вещь из рук'],[{k:'best'},'Теряешь лучшую вещь'],[{k:'hand',n:3},'Сбрось 3 карты'],[{k:'lvl',n:1},'−1 уровень'],[{k:'race'},'Теряешь расу'],[{k:'class'},'Теряешь класс'],[{k:'chaos'},'Бросок кубика хаоса']],
+ [[{k:'lvl',n:2},'−2 уровня'],[{k:'best'},'Теряешь лучшую вещь'],[{k:'chaos'},'Бросок кубика хаоса'],[{k:'hand',n:3},'Сбрось 3 карты'],[{k:'slot',s:'armor'},'Теряешь броню']],
+ [[{k:'lvl',n:2},'−2 уровня'],[{k:'all'},'Теряешь всю экипировку'],[{k:'lvl',n:3},'−3 уровня']]
+];
+const BADVERB=L('Кусает больно|Обижает до слёз|Отвешивает подзатыльник|Читает нотацию|Щекочет до икоты|Обнимает слишком крепко|Пинает под зад|Устраивает скандал');
+const KEYS=['orc','elf','cat','gob','bard','cook','priest','hunter'];
+
+const GADJ=L('Ржав-ый|Хрустальн-ый|Чугунн-ый|Позолоченн-ый|Картонн-ый|Вязан-ый|Деревянн-ый|Титанов-ый|Шоколадн-ый|Резинов-ый|Кожан-ый|Медн-ый|Стальн-ой|Волшебн-ый|Проклят-ый|Священн-ый|Скрипуч-ий|Блестящ-ий|Дыряв-ый|Модн-ый|Казённ-ый|Трофейн-ый|Самодельн-ый|Эльфийск-ий|Гномск-ий|Пластиков-ый|Ледян-ой|Огненн-ый|Антикварн-ый|Плюшев-ый|Кринжов-ый|Вайбов-ый|Хайпов-ый|Базов-ый|Токсичн-ый|Флексов-ый|Олдскульн-ый|Лимитированн-ый|Донатн-ый|Легендарн-ый|Рофлов-ый');
+const GITEM=[
+ ...nouns('Кепка:f,Панамка:f,Наушники:p,Шлем:m,Кастрюля:f,Ушанка:f,Корона:f,Панама:f,Ведро:n,Колпак:m,Капюшон:m,Тюрбан:m,Кокошник:m').map(o=>({...o,slot:'head'})),
+ ...nouns('Худи:n,Оверсайз-футболка:f,Пуховик:m,Кольчуга:f,Свитер:m,Халат:m,Доспех:m,Жилет:m,Плащ:m,Фартук:m,Пончо:n,Кафтан:m,Тулуп:m').map(o=>({...o,slot:'armor'})),
+ ...nouns('Кроссовки:p,Шлёпанцы:p,Носки-с-сандалиями:p,Сапоги:p,Тапки:p,Валенки:p,Ботинки:p,Лапти:p,Кеды:p,Ласты:p,Галоши:p').map(o=>({...o,slot:'feet'})),
+ ...nouns('Спиннер:m,Пауэрбанк:m,Селфи-палка:f,Пульт:m,Тапок:m,Меч:m,Кинжал:m,Половник:m,Скалка:f,Сковорода:f,Щит:m,Посох:m,Топорик:m,Зонтик:m,Вилка:f,Палочка:f,Рогатка:f,Кочерга:f,Батон:m').map(o=>({...o,slot:'hand',hands:1})),
+ ...nouns('Секира:f,Швабра:f,Бензопила:f,Алебарда:f,Двуручник:m,Багор:m,Оглобля:f,Весло:n').map(o=>({...o,slot:'hand',hands:2}))
+];
+const GSUF=L('|отваги|судьбы|лентяя|бургомистра|тёщи|древних|дворника|чемпиона|с гравировкой|со стразами|из ломбарда|на батарейках|с рынка|героя-неудачника|главного хапуги|старого прапорщика|из переплавленных ложек|на удачу|с бантиком|для флекса|как у бати|с маркетплейса|без регистрации и СМС|по подписке|на выброс|с вайбом девяностых|из лутбокса|за донат|с хайпом|для сигмы|для рофла|от бабушки-блогера');
+const GFL=L('Пахнет приключениями и немного сыром.|Выглядит дорого. Стоит дёшево.|Досталось от прошлого владельца. Он не жаловался.|Гарантия — до первого монстра.|Скрипит, но держится.|Блестит так, что монстры щурятся.|Сделано с любовью и молотком.|Никто не знает, как это работает.|Модно в этом сезоне подземелий.|Немного великовато. Или маловато.|Подписано: «Не трогать! Моё!»|Нашлось под кроватью великана.|Лучшее, что можно купить на сдачу.|Вызывает зависть соседей по столу.|Без инструкции, зато с характером.|Флексит само по себе.|+100 к вайбу.|Как у бати, только лучше.|Выпало из лутбокса с первого раза.|Купил за донат, не жалеет.|Это база, без этого никуда.|Пахнет хайпом.|Отзывы: 4,9 звезды, 2 отзыва.|Пришло совсем не то, что на картинке.|Скуфы такое не носят. А зря.');
+const SCONT=nouns('Энергетик:m,Шаурма:f,Лапша:f,Кружка:f,Смузи:n,Банка:f,Бутылка:f,Склянка:f,Фляга:f,Пирожок:m,Бутерброд:m,Свиток:m,Мешочек:m,Леденец:m,Пузырёк:m,Граната:f,Кулёк:m,Зелье:n,Варенье:n,Печенье:n,Яйцо:n');
+const SCNT=L('ярости|храбрости|злых пчёл|конфетти|бодрости|чеснока|хаоса|удачи|дури|наглости|кофеина|ворчания|молний|перца|громкого крика|щекотки|бабушкиной заботы|подозрительного происхождения|силы|вдохновения|злых ос|адреналина|компота|сарказма|мёда|кринжа|вайба|хайпа|чилла|чистой базы|рофлов|крипоты|мемов|дофамина|токсичности|флекса|сигма-энергии');
+const SADJ=L('|Маленьк-ий|Подозрительн-ый|Огромн-ый|Липк-ий|Старинн-ый|Бурлящ-ий|Тёпл-ый|Гремуч-ий|Волшебн-ый|Просроченн-ый');
+const CHEAD=nouns('Кринж:m,Лаг:m,Бан:m,Игнор:m,Баг:m,Сглаз:m,Порча:f,Проклятие:n,Невезение:n,Заклятие:n,Наговор:m,Морок:m,Облом:m,Кошмар:m,Зуд:m,Хандра:f,Икота:f,Напасть:f');
+const COF=L('понедельника|соседки|тёщи|налоговой|бухгалтера|чёрного кота|ржавчины|бюрократии|забытого пароля|разряженного телефона|сломанного каблука|мокрых носков|дырявых карманов|вечной очереди|скрипучей двери|холодного чая|пустого холодильника|лишнего пирожка|ветра в голове|кривых рук|утреннего будильника|хромой утки|злого гуся|старого ворчуна|сломанного лифта|потерянных ключей|вечного дедлайна|кислой капусты|громкого соседа|кривого зеркала|токсичного чата|спойлеров|лагающего интернета|вечного «ща»|игнора в личке|автокорректа|разряженного пауэрбанка|бумеров|несмешного мема|ответа «ок»|голосовых сообщений|рекламы перед видео|обновления винды|двух галочек без ответа|сломанной зарядки');
+const CADJ=L('|Мелк-ий|Подл-ый|Древн-ий|Внезапн-ый|Липк-ий|Мерзк-ий|Ехидн-ый|Тих-ий|Громк-ий|Колюч-ий');
+const CEFF=[[{k:'lvl',n:1},'−1 уровень.'],[{k:'hand',n:2},'Сбрось 2 карты из руки.'],[{k:'slot',s:'head'},'Теряешь головной убор.'],[{k:'slot',s:'armor'},'Теряешь броню.'],[{k:'slot',s:'feet'},'Теряешь обувь.'],[{k:'slot',s:'hand'},'Теряешь вещь из рук.'],[{k:'best'},'Теряешь лучшую вещь.'],[{k:'small'},'Теряешь самую мелкую вещь.'],[{k:'hiccup'},'−3 к силе в следующем бою.'],[{k:'race'},'Теряешь расу.'],[{k:'class'},'Теряешь класс.'],[{k:'chaos'},'Брось кубик хаоса: 1–2 −1 уровень, 3–4 лучшая вещь, 5 две карты, 6 пронесло.']];
+const MINT=L('Максимально|Душно|Кринжово|По-сигмовски|Очень|Слегка|Внезапно|Подозрительно|Невыносимо|Чуть-чуть|Ужасно|Немного|Жутко|Крайне|Местами|Вечно');
+const MODA=[['зл-ой',4],['голодн-ый',3],['бешен-ый',5],['накачанн-ый',4],['бронированн-ый',5],['огромн-ый',5],['обидчив-ый',3],['древн-ий',6],['ядовит-ый',4],['кусач-ий',3],['клыкаст-ый',4],['бодр-ый',3],['сонн-ый',-3],['мелк-ий',-4],['вежлив-ый',-2],['простуженн-ый',-3],['ленив-ый',-3],['уставш-ий',-2],['растерянн-ый',-3],['близорук-ий',-2],['хром-ой',-3],['застенчив-ый',-2],['влюблённ-ый',-4],['сыт-ый',-3],['душн-ый',4],['токсичн-ый',5],['прокачанн-ый',5],['базов-ый',3],['вайбов-ый',3],['чилов-ый',-3],['залипш-ий',-3],['лагающ-ий',-4],['кринжов-ый',-2]];
+const RPROF=L('качок|барыга|хиппи|программист|таксист|блогер|дачник|пенсионер|студент|сантехник|философ|поэт|турист|рыбак|фермер|бармен|почтальон|скульптор|дворник|модник|ботаник|фокусник|кассир|курьер|садовник|акробат|шахматист|танцор|библиотекарь|грузчик|стример|тиктокер|скуф|сигма|альтушка|зумер|бумер|душнила|нпс|донатер|мемолог|айтишник|флексер');
+const ORIG=L('|из Тамбова|с окраины|из глубинки|с Севера|из столицы|из деревни|с болот|из пригорода|из-за гор|из-за моря|с чердака|из библиотеки|из общаги');
+const CNICK=L('самоучка|любитель|недоучка|профессионал|романтик|ворчун|оптимист|неудачник|миллионер|заочник|ветеран|стажёр|халтурщик|фанат|интроверт|пенсионер|вундеркинд|перфекционист|лентяй|хвастун|путешественник|импровизатор|самозванец|энтузиаст|аматор|душнила|рофлер|сигма|кринжовщик|мемолог|чиллгай|токсик|флексер|донатер|стример|скуф|абобус');
+const LVN=L('Ачивка|Лайк|Донат|Респект|Грамота|Медаль|Диплом|Справка|Кубок|Значок|Похвала|Сертификат');
+const LFOR=L('за храбрость|за упорство|за вежливость|за красивые глаза|за выслугу лет|за участие|за сломанный стул|за громкий храп|за лучший пирог|за победу в споре|за поиск носков|за самый смешной шлем|за спасение кота|за ночную смену|за терпение|за сбор хлама|за честность (почти)|за находчивость|за беготню|за любовь к монстрам|за лучший мем|за базу|за отсутствие кринжа|за 100 лайков|за пережитый понедельник|за то, что просто зашёл|за рофл года|за душноту|за флекс|за победу над скуфом');
+const LEXT=L('| с печатью| от ведущего| в рамочке| б/у| из ломбарда| от мэра| с подписью| с блёстками');
+const ESN=L('Дымовая шашка|Банановая кожура|Мыльный пузырь|Телепорт-тапок|Шапка-невидимка|Плащ-незаметник|Порошок чихания|Свисток-отвлекалка|Фальшивый ключ|Карта выхода|Верёвка с крюком|Пакет муки|Горсть песка|Петарда|Зеркальце|Морковка-приманка|Надувной двойник|Тайный лаз|Скользкое масло|Будильник-обманка|Кнопка «Выйти из чата»|Отмазка «у меня лапки»|Фраза «ща вернусь»|Режим «Не беспокоить»|Ливалка из катки|Статус «не в сети»');
+const ESA=L('| дальнего действия| повышенной вонючести| класса люкс| последнего шанса| двойного действия| на крайний случай| быстрого реагирования');
+const ESB=L('| из сундука| ниндзя| по акции| для хапуг| старого вора| из будущего| с инструкцией| без регистрации и СМС| по-английски| на вайбе');
+const DN=L('Кубик|Кость|Шестигранник|Зарик');
+const DS1=L('удачи|шулера|хаоса|фортуны|азартного гнома|из таверны|с магнитом|со свинцом внутри|старого моряка|пирата|ведьмы|гадалки|чемпиона|профессора|кота|везунчика|игромана|из слоновой кости|из сахара|из хлеба|кринжа|рандома|сигмы|скуфа|рофла|стримера|удачи по подписке');
+const DS2=L('| в мешочке| на верёвочке| с трещиной| с позолотой| в бархате| с секретом| из ломбарда| на счастье| без одной точки| с гравировкой| в коробочке| с наклейкой| из музея| с запахом мяты| на удачу');
+
+const PAT_C={mon:18,curse:3,mod:2,race:1,cls:1,gear:9,shot:3,lvl:1,esc:1,dice:1};
+const PAT=[];{const left={...PAT_C};while(PAT.length<40)for(const k in left)if(left[k]>0){PAT.push(k);left[k]--}}
+const RANK=PAT.map((k,i)=>PAT.slice(0,i).filter(x=>x===k).length);
+const SPACE={mon:[MADJ.length,MNOUN.length,MSUF.length],gear:[GADJ.length,GITEM.length,GSUF.length],shot:[SADJ.length,SCONT.length,SCNT.length],curse:[CADJ.length,CHEAD.length,COF.length],mod:[MINT.length,MODA.length,MODA.length-1],race:[4,RPROF.length,ORIG.length],cls:[4,CNICK.length,ORIG.length],lvl:[LVN.length,LFOR.length,LEXT.length],esc:[ESN.length,ESA.length,ESB.length],dice:[DN.length,DS1.length,DS2.length]};
+function digits(t,j){const s=SPACE[t],n=s[0]*s[1]*s[2];let x=(j*7919+101)%n;const a=x%s[0];x=Math.floor(x/s[0]);return[a,x%s[1],Math.floor(x/s[1])]}
+const pick=(r,a)=>a[Math.floor(r()*a.length)];
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+function gen(id){
+ const k=id-NB,t=PAT[k%40],j=Math.floor(k/40)*PAT_C[t]+RANK[k%40],[a,b,c]=digits(t,j),r=mulberry(id*2654435761);
+ if(t==='mon'){
+  const nn=MNOUN[b],n=[adj(MADJ[a],nn.g),nn.w.toLowerCase(),MSUF[c]].join(' ').trim();
+  const lvl=1+Math.floor(Math.pow(r(),2)*19),tier=lvl<=4?0:lvl<=9?1:lvl<=14?2:3,bd=pick(r,BADS[tier]);
+  const o={vs:null,chill:0};
+  if(r()<.18){const key=pick(r,KEYS);o.vs={[key]:(r()<.6?1:-1)*(3+Math.floor(r()*3))}}
+  if(lvl>=8&&r()<.18)o.chill=2+Math.floor(r()*3);
+  return {...M(n,lvl,lvl>=12?2:1,Math.min(5,1+Math.floor(lvl/4)),bd[0],pick(r,MFL),`${pick(r,BADVERB)}. ${bd[1]}`,o),id};
+ }
+ if(t==='gear'){
+  const it=GITEM[b];let bo,big=false,hands=it.hands||0;
+  if(hands===2){bo=3+Math.floor(r()*3);big=bo>=4}else{bo=1+Math.floor(Math.pow(r(),1.3)*3);if(r()<.12){big=true;bo++}}
+  const n=[adj(GADJ[a],it.g),it.w.toLowerCase(),GSUF[c]].join(' ').trim();
+  return {...G(cap(n),it.slot,bo,100*bo+(big?100:0)+100*Math.floor(r()*2),pick(r,GFL),{hands,big,run:it.slot==='feet'&&r()<.3?1:0}),id};
+ }
+ if(t==='shot'){const ct=SCONT[b],bo=2+Math.floor(r()*5);const n=(SADJ[a]?adj(SADJ[a],ct.g)+' '+ct.w.toLowerCase():ct.w)+' '+SCNT[c];return {...SH(n,bo,Math.round((bo*50+100)/50)*50,`Разовая: +${bo} любой стороне боя.`),id}}
+ if(t==='curse'){const h=CHEAD[b],e=pick(r,CEFF);const n=(CADJ[a]?adj(CADJ[a],h.g)+' '+h.w.toLowerCase():h.w)+' '+COF[c];return {...C(n,e[0],e[1]),id}}
+ if(t==='mod'){const m1=MODA[b],rest=MODA.filter(x=>x!==m1),m2=rest[c];let bo=m1[1]+m2[1];if(!bo)bo=2;const n=`${MINT[a]} ${adj(m1[0],'m')} и ${adj(m2[0],'m')}`;const tr=bo>=7?2:bo>=4?1:bo<=-5?-1:0;return {...MOD(n,bo,tr,`Сыграй на любого монстра: ${bo>0?'+':''}${bo} к силе${tr?`, ${tr>0?'+':''}${tr} сокр.`:''}.`),id}}
+ if(t==='race'){const key=['orc','elf','cat','gob'][a];return {...RA(`${RACE_N[key]}-${RPROF[b]}${ORIG[c]?' '+ORIG[c]:''}`,key),id}}
+ if(t==='cls'){const key=['bard','cook','priest','hunter'][a];return {...CL(`${CLASS_N[key]}-${CNICK[b]}${ORIG[c]?' '+ORIG[c]:''}`,key),id}}
+ if(t==='lvl')return {...LV(`${LVN[a]} ${LFOR[b]}${LEXT[c]}`),id};
+ if(t==='esc')return {...ES(ESN[a]+ESA[b]+ESB[c],100+100*Math.floor(r()*3),'Сбеги из боя без броска кубика.'),id};
+ return {...DI(`${DN[a]} ${DS1[b]}${DS2[c]}`,r()<.5?'reroll':'luck',100+100*Math.floor(r()*3)),id};
+}
+const CACHE=new Map();
+function card(id){if(!Number.isInteger(id)||id<0||id>=TOTAL)return null;if(id<NB)return BASE_ALL[id];let c=CACHE.get(id);if(!c){c=gen(id);CACHE.set(id,c)}return c}
+
+/* ================= АРТ ================= */
+const hash=s=>[...s].reduce((h,c)=>(h*31+c.charCodeAt(0))%9973,7);
+function art(c){
+ const h=hash(c.n),F='#1b4cc0',D='#0c2a78',Lt='#9db9f2',E='stroke="#fff" stroke-width="2"';
+ const base='<ellipse cx="32" cy="59" rx="20" ry="3.5" fill="#1b4cc033"/>';
+ let s;
+ if(c.type==='monster'){
+  const horns=h%3,eyes=1+h%3,mouth=h%4;
+  s=`${base}<path d="M12 56Q10 22 32 14Q54 22 52 56Q47 50 42 56Q37 50 32 56Q27 50 22 56Q17 50 12 56Z" fill="${F}" ${E}/><path d="M18 30Q26 22 32 26" stroke="${Lt}" stroke-width="2" fill="none"/>`;
+  if(horns===1)s+=`<path d="M18 21L13 7L27 16ZM46 21L51 7L37 16Z" fill="${D}"/>`;
+  if(horns===2)s+=`<path d="M32 15L28 4L36 4Z" fill="${D}"/>`;
+  const ex=eyes===1?[32]:eyes===2?[25,39]:[22,32,42];
+  s+=ex.map(x=>`<circle cx="${x}" cy="33" r="${eyes===3?4.5:6}" fill="#fff"/><circle cx="${x+1}" cy="34" r="${eyes===3?2:3}" fill="#111"/>`).join('');
+  s+=[`<path d="M23 45Q32 39 41 45" stroke="#fff" stroke-width="3" fill="none"/>`,`<path d="M23 43Q32 52 41 43Z" fill="#fff"/>`,`<path d="M22 44H42" stroke="#fff" stroke-width="3"/><path d="M26 44V48M32 44V48M38 44V48" stroke="#fff" stroke-width="2"/>`,`<circle cx="32" cy="46" r="4" fill="#fff"/>`][mouth];
+ }
+ else if(c.type==='curse')s=`${base}<circle cx="32" cy="32" r="24" fill="${F}" ${E}/><path d="M32 30a3 3 0 1 1-3 3a7 7 0 1 1 7 7a11 11 0 1 1-11-11a15 15 0 1 1 15 15" stroke="#fff" stroke-width="3" fill="none"/>`;
+ else if(c.type==='mod')s=`${base}<path d="M32 6L56 32H43V56H21V32H8Z" fill="${c.b>0?'#e5402e':F}" ${E} transform="${c.b<0?'rotate(180 32 31)':''}"/>`;
+ else if(c.type==='race')s=`${base}<circle cx="32" cy="24" r="12" fill="${F}" ${E}/><path d="M12 58Q14 38 32 38Q50 38 52 58Z" fill="${F}" ${E}/>${c.key==='cat'?`<path d="M22 16L22 4L30 13ZM42 16L42 4L34 13Z" fill="${D}"/>`:c.key==='elf'?`<path d="M20 24L8 16L21 20ZM44 24L56 16L43 20Z" fill="${D}"/>`:c.key==='orc'?`<path d="M26 30L25 24M38 30L39 24" stroke="#fff" stroke-width="3"/>`:`<path d="M20 22L10 22L20 28ZM44 22L54 22L44 28Z" fill="${D}"/>`}`;
+ else if(c.type==='class')s=`${base}<rect x="14" y="10" width="36" height="46" rx="6" fill="${F}" ${E}/><path d="M22 22H42M22 30H42M22 38H34" stroke="#fff" stroke-width="3"/><circle cx="42" cy="46" r="6" fill="#e5402e"/>`;
+ else if(c.type==='gear'){
+  const sl={head:`<path d="M12 40Q12 14 32 14Q52 14 52 40Z" fill="${F}" ${E}/><rect x="7" y="38" width="50" height="9" rx="4" fill="${D}"/><path d="M20 26Q26 18 34 18" stroke="${Lt}" stroke-width="2.5" fill="none"/>`,
+   armor:`<path d="M21 8H43L57 21L48 28L46 55H18L16 28L7 21Z" fill="${F}" ${E}/><path d="M26 8Q32 16 38 8" fill="${D}"/><path d="M32 22V50M24 30H40" stroke="${Lt}" stroke-width="2"/>`,
+   feet:`<path d="M20 6H38V36L54 42Q59 45 57 55H18Z" fill="${F}" ${E}/><rect x="18" y="50" width="39" height="5" fill="${D}"/>`,
+   hand:c.hands===2?`<path d="M30 4H34V58H30Z" fill="${D}"/><path d="M34 8Q56 14 50 32Q44 24 34 26Z" fill="${F}" ${E}/><path d="M30 8Q8 14 14 32Q20 24 30 26Z" fill="${F}" ${E}/>`:`<path d="M32 3L38 12V40H26V12Z" fill="#fff" stroke="${F}" stroke-width="2.5"/><path d="M32 8V38" stroke="${Lt}" stroke-width="2"/><rect x="17" y="40" width="30" height="6" rx="2" fill="${F}"/><rect x="29" y="46" width="6" height="9" fill="${D}"/><circle cx="32" cy="57" r="3.5" fill="${F}"/>`};
+  s=base+sl[c.slot]+(c.big?`<text x="58" y="14" font-size="11" fill="#e5402e" text-anchor="end" font-family="Rubik" font-weight="700">БОЛ</text>`:'');
+ }
+ else if(c.type==='shot')s=`${base}<path d="M26 5H38V20L50 46Q52 56 42 56H22Q12 56 14 46L26 20Z" fill="#fff" stroke="${F}" stroke-width="2.5"/><path d="M18 40H46L49 47Q50 54 42 54H22Q14 54 15 47Z" fill="${F}"/><circle cx="26" cy="47" r="2" fill="#fff"/><circle cx="35" cy="44" r="1.5" fill="#fff"/>`;
+ else if(c.type==='level')s=`${base}<path d="M32 4L39 23H58L43 35L49 55L32 43L15 55L21 35L6 23H25Z" fill="#f2b43c" stroke="${F}" stroke-width="2.5"/>`;
+ else if(c.type==='escape')s=`${base}<circle cx="22" cy="38" r="12" fill="${Lt}"/><circle cx="36" cy="28" r="15" fill="#fff" stroke="${F}" stroke-width="2.5"/><circle cx="44" cy="42" r="11" fill="${F}"/>`;
+ else s=`${base}<rect x="12" y="12" width="40" height="40" rx="9" fill="#fff" stroke="${F}" stroke-width="3" transform="rotate(${h%30-15} 32 32)"/><circle cx="24" cy="24" r="4" fill="${F}"/><circle cx="32" cy="32" r="4" fill="#e5402e"/><circle cx="40" cy="40" r="4" fill="${F}"/>`;
+ return `<svg viewBox="0 0 64 64" aria-hidden="true">${s}</svg>`;
+}
+const SLOT={head:'Голова',armor:'Броня',feet:'Ноги',hand:'В руку'};
+let FLIPPED=-1;
+function cardHTML(c,ac=[],flip=false){
+ const kind={monster:`Монстр, сила ${c.lvl}`,curse:'Проклятие',mod:'Усилитель монстра',gear:c.type==='gear'?SLOT[c.slot]+(c.hands===2?', две руки':'')+(c.big?', большая':''):'',shot:'Разовая, в бой',level:'Повышение',escape:'Разовая, в бой',dice:'Кубик',race:'Раса',class:'Класс'}[c.type];
+ const val=c.type==='monster'?c.lvl:(c.type==='gear'||c.type==='shot')?'+'+c.b:c.type==='mod'?(c.b>0?'+':'')+c.b:'';
+ let foot='';
+ if(c.type==='monster'){foot=`Награда: ${c.lv} ур., ${c.tr} сокр.`;if(c.vs)foot+='<br>'+Object.entries(c.vs).map(([k,v])=>`${VS_N[k]} ${v>0?'+':''}${v}`).join(', ');if(c.chill)foot+=`<br>Не гонится за уровнем ${c.chill} и ниже`;foot+=`<br>Непруха: ${c.badTxt}`}
+ else if(c.v)foot=`<span class="val">${c.v} зол.</span>`;
+ return `<div class="card ${c.deck}${flip?' flip':''}"><div class="ch"><b>${c.n}</b>${val!==''?`<i>${val}</i>`:''}</div><div class="art">${art(c)}</div><div class="kind">${kind}</div><p>${c.txt}</p>${foot?`<small>${foot}</small>`:''}${ac.length?`<div class="ca">${ac.map(a=>`<button data-a="${a[0]}" data-id="${c.id}" data-t="${a[2]??''}" class="${a[3]||''}">${esc(a[1])}</button>`).join('')}</div>`:''}</div>`;
+}
+
+/* ================= ДВИЖОК ================= */
+let GEN=0,S=null,V=null,NET=null,ROOM;
+const W=async ms=>{const g=GEN;await sleep(ms);if(g!==GEN)throw 'reset'};
+const P=()=>S.players;
+const N=p=>'\u0001'+p.name+'\u0002';
+function log(t){S.log.unshift(t);if(S.log.length>60)S.log.pop()}
+function draw(k){const deck=S[k],disc=k==='door'?S.dd:S.td;if(!deck.length)deck.push(...shuffle(disc.splice(0)));return deck.pop()||null}
+const give=(p,c)=>{if(c)p.hand.push(c)};
+const toss=c=>{if(c)(c.deck==='door'?S.dd:S.td).push(c)};
+const gearB=p=>p.gear.reduce((s,c)=>s+c.b,0);
+const pow=p=>p.level+gearB(p)-(p.hiccup?3:0);
+const lim=p=>p.race&&p.race.key==='orc'?6:5;
+const has=(p,k)=>!!((p.race&&p.race.key===k)||(p.cls&&p.cls.key===k));
+function conflicts(p,c){
+ let out=c.slot==='hand'?[]:p.gear.filter(g=>g.slot===c.slot);
+ if(c.slot==='hand'){
+  const hs=p.gear.filter(g=>g.slot==='hand').sort((a,b)=>a.b-b.b);
+  let used=hs.reduce((s,g)=>s+g.hands,0);
+  while(used+c.hands>2&&hs.length){const g=hs.shift();out.push(g);used-=g.hands}
+ }
+ if(c.big&&!has(p,'orc'))for(const g of p.gear)if(g.big&&!out.includes(g))out.push(g);
+ return out;
+}
+function equip(p,c){rm(p.hand,c);for(const g of conflicts(p,c)){rm(p.gear,g);p.hand.push(g)}p.gear.push(c)}
+function levelUp(p,n,why){const was=p.level;p.level=Math.min(9,p.level+n);if(p.level>was)log(`${N(p)} ${why}: уровень ${p.level}`)}
+const price=(p,c)=>has(p,'gob')?Math.round(c.v*1.5/50)*50:c.v;
+function sell(p,c){
+ if(!rm(p.hand,c))rm(p.gear,c);
+ const v=price(p,c);p.gold+=v;toss(c);log(`${N(p)} продаёт «${c.n}» за ${v} зол.`);
+ while(p.gold>=1000&&p.level<9){p.gold-=1000;levelUp(p,1,'покупает уровень')}
+}
+function doRoll(p,label,need=0){const v=1+rnd(6);S.roll={v,id:++S.seq,label,who:p.name,need};return v}
+function applyBad(p,b,curse=false){
+ if(curse&&has(p,'priest')&&p.hand.length){const c=p.hand.slice().sort((a,x)=>(a.v||0)-(x.v||0))[0];rm(p.hand,c);toss(c);log(`${N(p)} откупается от проклятия картой «${c.n}»`);return}
+ const lose=g=>{rm(p.gear,g);toss(g);log(`${N(p)} лишается «${g.n}»`)};
+ if(b.k==='lvl'){const w=p.level;p.level=Math.max(1,p.level-b.n);log(`${N(p)} теряет ${w-p.level} ур.`)}
+ else if(b.k==='slot'||b.k==='best'||b.k==='small'){
+  let gs=p.gear.filter(g=>b.k!=='slot'||g.slot===b.s).sort((a,c)=>c.b-a.b);
+  if(b.k==='small')gs=gs.filter(g=>!g.big).reverse();
+  if(gs[0])lose(gs[0]);else log(`${N(p)}: терять нечего, повезло`);
+ }
+ else if(b.k==='hand'){let n=0;for(let i=0;i<b.n&&p.hand.length;i++){toss(p.hand.splice(rnd(p.hand.length),1)[0]);n++}log(`${N(p)} сбрасывает ${n} карт(ы) из руки`)}
+ else if(b.k==='all'){const n=p.gear.length;p.gear.splice(0).forEach(toss);log(`${N(p)} теряет всю экипировку (${n} шт.)`)}
+ else if(b.k==='hiccup'){p.hiccup=true;log(`${N(p)} икает: −3 в следующем бою`)}
+ else if(b.k==='race'){if(p.race){toss(p.race);log(`${N(p)} больше не ${p.race.n}`);p.race=null}else log(`${N(p)}: расы и так не было`)}
+ else if(b.k==='class'){if(p.cls){toss(p.cls);log(`${N(p)} больше не ${p.cls.n}`);p.cls=null}else log(`${N(p)}: класса и так не было`)}
+ else if(b.k==='chaos'){const v=doRoll(p,'Кубик хаоса');log(`${N(p)} бросает кубик хаоса: ${v}`);
+  if(v<=2)applyBad(p,{k:'lvl',n:1});else if(v<=4)applyBad(p,{k:'best'});else if(v===5)applyBad(p,{k:'hand',n:2});else log(`${N(p)}: пронесло!`)}
+}
+const modSum=(F,k)=>F.mods.reduce((s,m)=>s+m[k],0);
+const sidePl=(F,st)=>[F.pi,F.helper].filter(i=>i!=null&&i>=0&&st.players[i]).map(i=>st.players[i]);
+function vsB(F,st){if(!F.mon.vs)return 0;let s=0;for(const p of sidePl(F,st))for(const k in F.mon.vs)if(has(p,k))s+=F.mon.vs[k];return s}
+const monPow=(F,st=S)=>Math.max(1,F.mon.lvl+modSum(F,'b')+F.mB+vsB(F,st));
+const monTr=F=>Math.max(0,F.mon.tr+modSum(F,'tr'));
+const heroPow=(F,st=S)=>sidePl(F,st).reduce((s,p)=>s+pow(p)+(has(p,'hunter')&&F.mon.lvl>=10?3:0),0)+F.pB;
+const wins=(F,st=S)=>heroPow(F,st)>monPow(F,st);
+const newFight=(pi,mon)=>({pi,mon,mods:[],pB:0,mB:0,helper:null,asked:[],bs:0,cards:[]});
+function playOn(F,p,c){
+ rm(p.hand,c);const pi=P().indexOf(p),hero=pi===F.pi||pi===F.helper;
+ if(c.type==='mod'){F.mods.push(c);log(`${N(p)} играет на монстра «${c.n}» (${c.b>0?'+':''}${c.b})`);return}
+ let b=c.b;
+ if(c.type==='dice'){b=doRoll(p,'Кубик в бою');log(`${N(p)} бросает «${c.n}»: выпало ${b}`)}
+ else if(has(p,'cook'))b+=2;
+ if(hero)F.pB+=b;else F.mB+=b;F.cards.push(c);
+ log(`${N(p)} бросает «${c.n}»: +${b} ${hero?'героям':'монстру'}`);
+}
+function endFight(F){toss(F.mon);F.mods.forEach(toss);F.cards.forEach(toss);P()[F.pi].hiccup=false;S.F=null}
+function winFight(F){
+ const p=P()[F.pi];let tr=monTr(F);
+ p.level=Math.min(10,p.level+F.mon.lv);
+ log(`${N(p)} побеждает «${F.mon.n}»: +${F.mon.lv} ур. (теперь ${p.level})`);
+ if(F.helper!=null){const h=P()[F.helper],k=Math.floor(tr/2);for(let i=0;i<k;i++)give(h,draw('tre'));tr-=k;if(k)log(`${N(h)} забирает ${k} сокр. за помощь`);if(has(h,'elf'))levelUp(h,1,'радуется победе как эльф')}
+ for(let i=0;i<tr;i++)give(p,draw('tre'));
+ log(`${N(p)} тащит ${tr} сокр.`);
+ endFight(F);
+ if(p.level>=10)gameOver(F.pi);
+}
+function runAway(F){
+ const p=P()[F.pi],bonus=p.gear.reduce((s,g)=>s+(g.run||0),0),need=has(p,'cat')?4:5;
+ let v=doRoll(p,'Побег',need-bonus),ok=v+bonus>=need;
+ log(`${N(p)} бросает кубик на побег: ${v}${bonus?'+'+bonus:''} (нужно ${need}+)`);
+ if(!ok){const d=p.hand.find(c=>c.type==='dice'&&c.dice==='reroll');if(d){rm(p.hand,d);toss(d);v=doRoll(p,'Переброс',need-bonus);ok=v+bonus>=need;log(`${N(p)} перебрасывает «${d.n}»: ${v}`)}}
+ S.roll.ok=ok;
+ if(ok)log(`${N(p)} убегает от «${F.mon.n}»`);
+ else{log(`${N(p)} не убежал. ${F.mon.badTxt}`);applyBad(p,F.mon.bad)}
+ endFight(F);
+}
+function gameOver(i){S.over=i;S.busy=true;render()}
+function charity(p){
+ const out=[];
+ while(p.hand.length>lim(p)){
+  const c=p.hand.slice().sort((a,b)=>(a.v||0)-(b.v||0))[0];rm(p.hand,c);
+  const others=P().filter(o=>o!==p),min=Math.min(...others.map(o=>o.level));
+  if(p.level<=min){toss(c);out.push('сброс')}
+  else{const r=others.filter(o=>o.level===min);const t=r[rnd(r.length)];t.hand.push(c);out.push(t.name)}
+ }
+ if(out.length)log(`${N(p)} раздаёт лишнее: ${out.join(', ')}`);
+}
+const leaderOf=p=>P().filter(o=>o!==p).sort((a,b)=>b.level-a.level||pow(b)-pow(a))[0];
+const isHuman=p=>p.kind!=='bot';
+function becomeRC(p,c){const k=c.type==='race'?'race':'cls';rm(p.hand,c);if(p[k])toss(p[k]);p[k]=c;log(`${N(p)} становится: ${c.n}`)}
+
+function botPrep(p){
+ for(const c of p.hand.slice())if((c.type==='race'&&!p.race)||(c.type==='class'&&!p.cls))becomeRC(p,c);
+ for(const c of p.hand.filter(c=>c.type==='gear').sort((a,b)=>b.b-a.b)){
+  if(!p.hand.includes(c))continue;
+  const d=c.b-conflicts(p,c).reduce((s,g)=>s+g.b,0);
+  if(d>0){equip(p,c);log(`${N(p)} надевает «${c.n}»`)}
+ }
+ for(const c of p.hand.filter(c=>c.type==='level'))if(p.level<9){rm(p.hand,c);toss(c);levelUp(p,1,`играет «${c.n}»`)}
+ for(const c of p.hand.filter(c=>c.type==='gear'||c.type==='race'||c.type==='class'))if(p.hand.length>lim(p)&&c.v)sell(p,c);
+}
+async function botsMeddle(F){
+ for(let i=0;i<4;i++){
+  const b=P()[i];if(b.kind!=='bot'||i===F.pi||i===F.helper||!wins(F))continue;
+  const lv=P()[F.pi].level,pr=(lv>=8?.85:lv>=6?.45:.2)+(isHuman(P()[F.pi])?.1:0);
+  const c=b.hand.find(c=>(c.type==='mod'&&c.b>0)||c.type==='shot');
+  if(c&&Math.random()<pr){playOn(F,b,c);render();await W(900)}
+ }
+}
+const canMeddle=p=>p.hand.some(c=>c.type==='shot'||c.type==='mod'||(c.type==='dice'&&c.dice==='luck'));
+function armTimer(w){
+ const seats=w.type==='meddle'?w.wait:[w.who];
+ if(!seats.some(s=>P()[s].kind==='remote'))return;
+ setTimeout(()=>{if(S&&S.win===w){S.win=null;w.resolve(false);render()}},30000);
+}
+const waitWin=w=>new Promise(res=>{w.resolve=res;S.win=w;armTimer(w);render()});
+async function botFight(p,mon){
+ const F=S.F=newFight(P().indexOf(p),mon);
+ log(`${N(p)} дерётся с «${mon.n}» (${heroPow(F)} против ${monPow(F)})`);render();await W(1000);
+ if(!wins(F)&&mon.chill&&p.level<=mon.chill){log(`«${mon.n}» не гонится за ${p.name}. Разошлись миром.`);endFight(F);render();await W(700);return}
+ await botsMeddle(F);
+ const wait=P().map((h,i)=>i).filter(i=>i!==F.pi&&P()[i].kind!=='bot'&&canMeddle(P()[i]));
+ if(wait.length)await waitWin({type:'meddle',wait});else await W(500);
+ if(!wins(F)){
+  const shots=p.hand.filter(c=>c.type==='shot').sort((a,b)=>b.b-a.b);
+  if(heroPow(F)+shots.reduce((s,c)=>s+c.b+(has(p,'cook')?2:0),0)>monPow(F))for(const c of shots){if(wins(F))break;playOn(F,p,c);render();await W(700)}
+ }
+ if(!wins(F)&&has(p,'bard')){
+  while(!wins(F)&&F.bs<3&&p.hand.length&&heroPow(F)+2*(3-F.bs)>monPow(F)){const c=p.hand.slice().sort((a,b)=>(a.v||0)-(b.v||0))[0];rm(p.hand,c);toss(c);F.bs++;F.pB+=2;log(`${N(p)} поёт песню ярости, сбросив «${c.n}»: +2`);render();await W(600)}
+ }
+ if(!wins(F)){
+  for(let i=0;i<4&&!wins(F)&&F.helper==null;i++){
+   const h=P()[i];if(i===F.pi||h.kind==='bot')continue;
+   if(heroPow(F)+pow(h)>monPow(F)){
+    const yes=await waitWin({type:'help',who:i,from:F.pi,share:Math.floor(monTr(F)/2)});
+    if(yes){F.helper=i;log(`${N(h)} вписывается помочь ${p.name}`)}else log(`${N(h)} отказывает ${p.name} в помощи`);
+   }
+  }
+  for(let i=0;i<4&&!wins(F)&&F.helper==null;i++){
+   const h=P()[i];if(i===F.pi||h.kind!=='bot')continue;
+   if(heroPow(F)+pow(h)>monPow(F)&&p.level+mon.lv<10&&Math.random()<.5){F.helper=i;log(`${N(h)} помогает ${p.name} за половину добычи`)}
+  }
+  render();await W(700);
+ }
+ if(wins(F)){winFight(F);render();await W(900)}
+ else{const e=p.hand.find(c=>c.type==='escape');
+  if(e){rm(p.hand,e);toss(e);log(`${N(p)} использует «${e.n}» и исчезает`);endFight(F);render();await W(900)}
+  else{runAway(F);render();await W(1700)}}
+}
+async function botTurn(p){
+ S.phase='bot';S.busy=true;S.roll=null;render();await W(700);
+ botPrep(p);render();await W(400);
+ for(const c of p.hand.filter(c=>c.type==='curse')){
+  if(Math.random()<.6){const t=leaderOf(p);rm(p.hand,c);log(`${N(p)} проклинает ${t.name}: «${c.n}»`);applyBad(t,c.bad,true);toss(c);render();await W(c.bad.k==='chaos'?1700:900)}
+ }
+ const c=draw('door');let fought=false;
+ S.reveal=c;log(`${N(p)} выбивает дверь: «${c.n}»`);render();await W(1100);S.reveal=null;
+ if(c.type==='monster'){fought=true;await botFight(p,c)}
+ else if(c.type==='curse'){applyBad(p,c.bad,true);toss(c);render();if(c.bad.k==='chaos')await W(1600)}
+ else give(p,c);
+ if(!fought&&S.over<0){
+  const m=p.hand.filter(x=>x.type==='monster'&&x.lvl<pow(p)).sort((a,b)=>b.lvl-a.lvl)[0];
+  if(m){rm(p.hand,m);log(`${N(p)} ищет неприятности`);await botFight(p,m)}
+  else{give(p,draw('door'));log(`${N(p)} обшаривает комнату`)}
+ }
+ if(S.over<0)botPrep(p);
+}
+async function loop(){
+ const g=GEN;
+ try{
+  while(S.over<0&&g===GEN){
+   const p=P()[S.cur];
+   if(p.kind==='bot')await botTurn(p);
+   else{S.phase='start';S.busy=false;S.roll=null;log(`Ход: ${N(p)}. Надень вещи и выбей дверь.`);render();await new Promise(r=>S.endTurn=r);S.endTurn=null}
+   if(S.over>=0||g!==GEN)break;
+   charity(p);S.cur=(S.cur+1)%4;
+  }
+ }catch(e){if(e!=='reset')console.error(e)}
+ if(g===GEN)render();
+}
+const BOTS=['Борис Бородач','Зоя Колючка','Кеша Шустрый'];
+let SEATS=null;
+function newGame(seats){
+ GEN++;SEATS=seats;
+ const pool=new Set();while(pool.size<420)pool.add(NB+rnd(TOTAL-NB));
+ const all=[...BASE_ALL,...[...pool].map(card)];
+ S={players:seats.map(s=>({name:s.name,kind:s.kind,peer:s.peer||null,level:1,gold:0,hand:[],gear:[],race:null,cls:null,hiccup:false})),
+  door:shuffle(all.filter(c=>c.deck==='door')),tre:shuffle(all.filter(c=>c.deck==='tre')),dd:[],td:[],cur:0,phase:'start',F:null,busy:false,win:null,log:[],over:-1,reveal:null,roll:null,seq:0,endTurn:null};
+ for(const p of S.players)for(let i=0;i<4;i++){give(p,draw('door'));give(p,draw('tre'))}
+ S.players.filter(p=>p.kind==='bot').forEach(botPrep);
+ $('over').hidden=true;
+ loop();
+}
+
+/* ================= ДЕЙСТВИЯ ИГРОКА ================= */
+const PH_IDLE=['start','afterDoor','end'];
+const idle=(st,s)=>st.cur===s&&!st.busy&&!st.F&&!st.win&&PH_IDLE.includes(st.phase);
+const inFight=(st,s)=>!!st.F&&st.F.pi===s&&!st.busy&&!st.win;
+const meddle=(st,s)=>!!st.F&&s>=0&&s!==st.F.pi&&s!==st.F.helper&&(st.win?st.win.type==='meddle'&&st.win.wait.includes(s):!st.busy&&st.players[st.F.pi].kind!=='bot');
+const asked=(st,s)=>!!st.win&&st.win.type==='help'&&st.win.who===s;
+async function startFight(seat,c){
+ const F=S.F=newFight(seat,c);S.phase='fight';S.busy=true;S.roll=null;
+ log(`${N(P()[seat])} дерётся с «${c.n}»`);render();await W(700);
+ await botsMeddle(F);S.busy=false;render();
+}
+function resolveWin(val){const w=S.win;S.win=null;w.resolve(val)}
+function act(seat,a,id,t){
+ if(!S||S.over>=0)return;
+ const me=P()[seat];if(!me)return;
+ const c=me.hand.find(x=>x.id===id)||me.gear.find(x=>x.id===id),F=S.F;
+ if(a==='pass'&&S.win){
+  if(S.win.type==='meddle'&&S.win.wait.includes(seat)){S.win.wait=S.win.wait.filter(x=>x!==seat);if(!S.win.wait.length)resolveWin(true)}
+  else if(asked(S,seat))resolveWin(false);
+ }
+ else if(a==='helpYes'&&asked(S,seat))resolveWin(true);
+ else if(a==='kick'&&idle(S,seat)&&S.phase==='start'){
+  const d=draw('door');S.roll=null;log(`${N(me)} выбивает дверь: «${d.n}»`);
+  if(d.type==='monster'){startFight(seat,d).catch(()=>{});return}
+  S.reveal=d;
+  if(d.type==='curse'){applyBad(me,d.bad,true);toss(d)}else give(me,d);
+  S.phase='afterDoor';
+ }
+ else if(a==='loot'&&idle(S,seat)&&S.phase==='afterDoor'){give(me,draw('door'));S.reveal=null;log(`${N(me)} обшаривает комнату и находит карту двери`);S.phase='end'}
+ else if(a==='end'&&idle(S,seat)&&S.phase==='end'){S.reveal=null;S.phase='bot';if(S.endTurn)S.endTurn()}
+ else if(a==='win'&&inFight(S,seat)&&wins(F)){winFight(F);S.phase='end'}
+ else if(a==='run'&&inFight(S,seat)){runAway(F);S.phase='end'}
+ else if(a==='chill'&&inFight(S,seat)&&F.mon.chill&&me.level<=F.mon.chill){log(`«${F.mon.n}» не стал гнаться за ${me.name}`);endFight(F);S.phase='end'}
+ else if(a==='ask'&&inFight(S,seat)&&F.helper==null&&!F.asked.includes(t)&&t!==seat&&P()[t]){
+  F.asked.push(t);const b=P()[t];
+  if(b.kind==='bot'){
+   if(heroPow(F)+pow(b)>monPow(F)&&me.level+F.mon.lv<10&&Math.random()<.7){F.helper=t;log(`${N(b)} соглашается помочь за половину добычи`)}
+   else log(`${N(b)} отказывается: ${me.level+F.mon.lv>=10?'«ещё чего, ты же выиграешь»':heroPow(F)+pow(b)<=monPow(F)?'«нам и вдвоём не вытянуть»':'«не сегодня»'}`);
+  }else{
+   log(`${N(me)} зовёт на помощь ${b.name}`);
+   waitWin({type:'help',who:t,from:seat,share:Math.floor(monTr(F)/2)}).then(yes=>{if(S.F!==F)return;if(yes){F.helper=t;log(`${N(b)} вписывается в бой`)}else log(`${N(b)} отказывается помогать`);render()});
+  }
+ }
+ else if(c){
+  if(a==='equip'&&idle(S,seat)&&c.type==='gear'&&me.hand.includes(c)){equip(me,c);log(`${N(me)} надевает «${c.n}»`)}
+  else if(a==='sell'&&idle(S,seat)&&c.v)sell(me,c);
+  else if(a==='lvl'&&idle(S,seat)&&c.type==='level'&&me.level<9){rm(me.hand,c);toss(c);levelUp(me,1,`играет «${c.n}»`)}
+  else if(a==='become'&&idle(S,seat)&&(c.type==='race'||c.type==='class'))becomeRC(me,c);
+  else if(a==='curse'&&idle(S,seat)&&c.type==='curse'&&P()[t]&&t!==seat){const tg=P()[t];rm(me.hand,c);log(`${N(me)} проклинает ${tg.name}: «${c.n}»`);applyBad(tg,c.bad,true);toss(c)}
+  else if(a==='fight'&&idle(S,seat)&&S.phase==='afterDoor'&&c.type==='monster'){rm(me.hand,c);S.reveal=null;startFight(seat,c).catch(()=>{});return}
+  else if((a==='shot'&&c.type==='shot'||a==='mod'&&c.type==='mod'||a==='luck'&&c.type==='dice'&&c.dice==='luck')&&F&&(inFight(S,seat)||meddle(S,seat)))playOn(F,me,c);
+  else if(a==='song'&&inFight(S,seat)&&has(me,'bard')&&F.bs<3){rm(me.hand,c);toss(c);F.bs++;F.pB+=2;log(`${N(me)} поёт песню ярости, сбросив «${c.n}»: +2`)}
+  else if(a==='esc'&&inFight(S,seat)&&c.type==='escape'){rm(me.hand,c);toss(c);log(`${N(me)} использует «${c.n}» и растворяется`);endFight(F);S.phase='end'}
+ }
+ render();
+}
+
+/* ================= СЕТЬ ================= */
+function encode(){
+ const ids=a=>a.map(c=>c.id),F=S.F,w=S.win;
+ NET.q=(NET.q||0)+1;
+ return {q:NET.q,cur:S.cur,ph:S.phase,bz:S.busy?1:0,
+  p:S.players.map(p=>[p.name,p.kind==='bot'?0:1,p.level,p.gold,ids(p.hand),ids(p.gear),p.race?p.race.id:-1,p.cls?p.cls.id:-1,p.hiccup?1:0]),
+  f:F?[F.pi,F.mon.id,ids(F.mods),F.pB,F.mB,F.helper==null?-1:F.helper,F.asked,F.bs]:0,
+  w:w?{t:w.type,who:w.who??-1,wait:w.wait||[],share:w.share||0,from:w.from??-1}:0,
+  r:S.reveal?S.reveal.id:-1,ro:S.roll,o:S.over,d:[S.door.length,S.tre.length],l:S.log.slice(0,8),pr:S.players.map(p=>p.peer||'')};
+}
+const num=(x,d=0)=>Number.isFinite(x)?x:d;
+const arr=x=>Array.isArray(x)?x:[];
+function decode(s){
+ const cs=a=>arr(a).map(card).filter(Boolean);
+ const st={cur:num(s.cur),phase:String(s.ph||''),busy:!!s.bz,over:num(s.o,-1),log:arr(s.l).map(String),pr:arr(s.pr).map(String),dl:num(arr(s.d)[0]),tl:num(arr(s.d)[1]),
+  players:arr(s.p).slice(0,4).map(a=>({name:String(a[0]).slice(0,24),kind:a[1]?'human':'bot',level:num(a[2],1),gold:num(a[3]),hand:cs(a[4]),gear:cs(a[5]),race:card(a[6]),cls:card(a[7]),hiccup:!!a[8]})),
+  reveal:card(s.r),roll:s.ro&&typeof s.ro==='object'?{v:Math.min(6,Math.max(1,num(s.ro.v,1))),id:num(s.ro.id),label:String(s.ro.label||''),who:String(s.ro.who||''),need:num(s.ro.need),ok:s.ro.ok}:null,
+  win:s.w?{type:String(s.w.t),who:num(s.w.who,-1),wait:arr(s.w.wait).map(Number),share:num(s.w.share),from:num(s.w.from,-1)}:null,F:null};
+ const f=s.f;if(Array.isArray(f)&&card(f[1]))st.F={pi:num(f[0]),mon:card(f[1]),mods:cs(f[2]),pB:num(f[3]),mB:num(f[4]),helper:num(f[5],-1)<0?null:f[5],asked:arr(f[6]).map(Number),bs:num(f[7])};
+ if(st.players.length!==4||st.cur<0||st.cur>3)return null;
+ return st;
+}
+function publish(){
+ if(!NET||!NET.host||!NET.started||!S)return;
+ const st=encode();
+ const size=()=>new TextEncoder().encode(JSON.stringify({st,nick:NET.nick,host:1})).length;
+ while(size()>3800&&st.l.length)st.l.pop();
+ NET.r.presence({st}).catch(()=>{});
+}
+function nickVal(){const v=($('nick')&&$('nick').value.trim())||loadNick();return v.slice(0,20)||'Герой'}
+function saveNick(n){try{localStorage.setItem('hapugi-nick',n)}catch(e){}}
+function loadNick(){try{return localStorage.getItem('hapugi-nick')||''}catch(e){return''}}
+async function openRoom(code,host){
+ const nick=nickVal();saveNick(nick);
+ if(NET)await leaveRoom(true);
+ LOBBY={view:'wait'};renderLobby();
+ let r;try{r=await ROOM.join('hapugi-'+code)}catch(e){LOBBY={view:'menu',err:'Не удалось войти в комнату. Попробуй ещё раз.'};renderLobby();return}
+ GEN++;S=null;V=null;
+ NET={r,code,host,nick,started:false,peer:null,seat:-1,acts:[],n:0,seen:{},lastQ:null,q:0};
+ LOBBY={view:'room'};
+ r.presence(host?{nick,host:1}:{nick}).catch(()=>{});
+ r.onPeers(ch=>{
+  if(!NET||NET.r!==r)return;
+  const mine=ch.peers.find(p=>p.sameTab);if(mine)NET.peer=mine.peer;
+  if(NET.host)onPeersHost(ch);else onPeersClient(ch);
+ });
+ renderLobby();render();
+}
+function onPeersHost(ch){
+ if(!NET.started){renderLobby();return}
+ for(const p of [...ch.joined,...ch.updated]){
+  if(p.sameTab||!S)continue;
+  const seat=S.players.findIndex(x=>x.peer===p.peer);if(seat<1)continue;
+  const acts=arr(p.presence&&p.presence.acts).filter(a=>a&&Number.isInteger(a.n)).sort((a,b)=>a.n-b.n);
+  for(const a of acts)if(a.n>(NET.seen[p.peer]||0)){NET.seen[p.peer]=a.n;act(seat,String(a.a),Number(a.id),a.t==null?null:Number(a.t))}
+ }
+ for(const p of ch.left){
+  if(!S)continue;const i=S.players.findIndex(x=>x.peer===p.peer&&x.kind==='remote');if(i<1)continue;
+  const pl=S.players[i];pl.kind='bot';pl.name=pl.name.slice(0,16)+' (бот)';log(`${N(pl)}: игрок вышел, за него играет бот`);
+  if(S.win){if(S.win.type==='meddle'&&S.win.wait.includes(i))act(i,'pass');else if(S.win.who===i)resolveWin(false)}
+  if(S.cur===i&&S.endTurn&&!S.busy){if(S.F&&S.F.pi===i){runAway(S.F)}S.endTurn()}
+  render();
+ }
+}
+function onPeersClient(ch){
+ const host=ch.peers.find(p=>!p.sameTab&&p.presence&&p.presence.host===1);
+ if(!host){NET.hostGone=true;if(NET.started)render();else renderLobby();return}
+ NET.hostGone=false;
+ const st=host.presence.st;
+ if(st&&typeof st==='object'){
+  if(st.q!==NET.lastQ||!V){const d=decode(st);if(d){NET.lastQ=st.q;V=d;NET.started=true;NET.seat=V.pr.indexOf(NET.peer);LOBBY=null;renderLobby();render()}}
+ }else{if(NET.started){NET.started=false;V=null;LOBBY={view:'room'};render()}renderLobby()}
+}
+function sendAct(a,id,t){
+ if(!NET||!NET.r)return;
+ NET.n++;NET.acts=[...NET.acts,{n:NET.n,a,id:Number.isFinite(id)?id:null,t}].slice(-6);
+ NET.r.presence({acts:NET.acts}).catch(()=>{});
+}
+function hostStart(){
+ const ps=NET.r.peers().filter(p=>!p.sameTab&&p.kind==='viewer'&&p.presence&&p.presence.nick&&p.presence.host!==1).slice(0,3);
+ const seats=[{name:NET.nick,kind:'me',peer:NET.peer}];
+ ps.forEach(p=>seats.push({name:String(p.presence.nick).slice(0,20),kind:'remote',peer:p.peer}));
+ let b=0;while(seats.length<4)seats.push({name:BOTS[b++],kind:'bot'});
+ NET.started=true;NET.seen={};LOBBY=null;renderLobby();newGame(seats);
+}
+async function leaveRoom(quiet){const n=NET;NET=null;V=null;GEN++;S=null;if(n&&n.r){try{await n.r.leave()}catch(e){}}if(!quiet){LOBBY={view:'menu'};renderLobby();render()}}
+
+/* ================= ЛОББИ ================= */
+let LOBBY={view:'menu'};
+function renderLobby(){
+ const el=$('lobby');
+ $('mode').textContent=NET?(NET.host?'Хозяин комнаты ':'Гость комнаты ')+NET.code.toUpperCase():S?'Одиночная игра':'Меню';
+ if(!LOBBY){el.hidden=true;return}
+ el.hidden=false;
+ if(LOBBY.view==='wait'){el.innerHTML='<div><h2>Подключаемся…</h2></div>';return}
+ if(LOBBY.view==='room'&&NET){
+  const ps=NET.r.peers().filter(p=>p.presence&&p.presence.nick);
+  const list=ps.map(p=>`<li>${esc(p.presence.nick)}${p.presence.host===1?' (хозяин)':''}${p.sameTab?', это ты':''}</li>`).join('')||'<li>Пока никого</li>';
+  const hostHere=ps.some(p=>p.presence.host===1);
+  el.innerHTML=`<div><h2>Комната</h2><div class="code">${esc(NET.code.toUpperCase())}</div><p class="stat">Скажи друзьям этот код. Они открывают эту же игру и жмут «Войти по коду». Пустые места займут боты.</p><ul class="plist">${list}</ul>
+  <div class="row">${NET.host?`<button class="go" data-a="start">Начать игру</button>`:`<p class="stat">${hostHere?'Ждём, пока хозяин начнёт игру.':'Хозяина в комнате пока нет. Проверь код.'}</p>`}<button data-a="leave">Выйти</button></div></div>`;
+  return;
+ }
+ const nick=esc(loadNick()||'');
+ const net=ROOM===undefined?'<p class="stat">Проверяем, доступна ли сетевая игра…</p>':ROOM?`<button data-a="create">Создать комнату для друзей</button><label for="code">Код комнаты</label><div class="row" style="justify-content:flex-start"><input id="code" maxlength="6" autocomplete="off" placeholder="например K7MX" style="flex:1"><button data-a="joincode">Войти по коду</button></div>`:'<p class="stat">Сетевая игра работает, когда страница открыта на claude.ai. Здесь доступна игра с ботами.</p>';
+ el.innerHTML=`<div><h2>Хапуги</h2><p class="stat">Карточная игра про жадных героев. До 4 игроков, пустые места занимают боты.</p><div class="col"><label for="nick">Твоё имя</label><input id="nick" maxlength="20" value="${nick}" placeholder="Герой"><button class="go" data-a="solo">Играть с ботами</button>${net}${LOBBY.err?`<p class="stat">${esc(LOBBY.err)}</p>`:''}${S||V?`<button data-a="close">Вернуться к партии</button>`:''}</div></div>`;
+}
+function wsRoom(){return{join:name=>new Promise((res,rej)=>{
+ let ws;try{ws=new WebSocket((location.protocol==='https:'?'wss://':'ws://')+location.host+'/ws')}catch(e){rej(e);return}
+ let myId=null,fns=[],ok=false;const pres=new Map(),raw=new Map();let prev=new Map();const mine={};
+ const view=()=>[...pres.entries()].map(([id,p])=>Object.freeze({peer:id,by:null,isMe:id===myId,sameTab:id===myId,kind:'viewer',guest:false,presence:p,updatedAt:0}));
+ const fire=()=>{const ps=view(),cur=new Map(ps.map(p=>[p.peer,p])),joined=[],updated=[],left=[];for(const p of ps){if(!prev.has(p.peer))joined.push(p);else if(prev.get(p.peer)!==p.presence)updated.push(p)}for(const id of prev.keys())if(!cur.has(id))left.push({peer:id});prev=new Map(ps.map(p=>[p.peer,p.presence]));const ch={peers:ps,joined,updated,left};fns.slice().forEach(f=>{try{f(ch)}catch(e){console.error(e)}})};
+ const api={presence:async patch=>{for(const k in patch){if(patch[k]===null)delete mine[k];else mine[k]=patch[k]}if(ws.readyState===1)ws.send(JSON.stringify({t:'p',p:mine}))},
+  peers:view,onPeers:fn=>{fns.push(fn);setTimeout(()=>fn({peers:view(),joined:view(),updated:[],left:[]}),0);return()=>{fns=fns.filter(f=>f!==fn)}},
+  leave:async()=>{fns=[];try{ws.close()}catch(e){}},connected:()=>ws.readyState===1};
+ const to=setTimeout(()=>{if(!ok){try{ws.close()}catch(e){}rej(new Error('timeout'))}},15000);
+ ws.onopen=()=>ws.send(JSON.stringify({t:'join',room:name}));
+ ws.onmessage=e=>{let d;try{d=JSON.parse(e.data)}catch(x){return}
+  if(d.t==='hi'){myId=String(d.id);ok=true;clearTimeout(to);res(api)}
+  else if(d.t==='all'&&Array.isArray(d.list)){const seen=new Set();for(const x of d.list){const k=String(x.peer),j=JSON.stringify(x.p||{});seen.add(k);if(raw.get(k)!==j){raw.set(k,j);pres.set(k,Object.freeze(JSON.parse(j)))}}for(const k of [...pres.keys()])if(!seen.has(k)){pres.delete(k);raw.delete(k)}fire()}};
+ ws.onclose=()=>{clearTimeout(to);if(!ok){rej(new Error('closed'));return}pres.clear();raw.clear();fire()};
+})}}
+(async()=>{try{if(window.claude&&window.claude.use)ROOM=await window.claude.use('room');else if(/^https?:$/.test(location.protocol)&&!/claude\.ai$|claudeusercontent/.test(location.hostname))ROOM=wsRoom();else ROOM=null}catch(e){ROOM=null}if(LOBBY&&LOBBY.view==='menu')renderLobby()})();
+
+/* ================= ОТРИСОВКА ================= */
+const fmt=s=>esc(s).replace(/\u0001/g,'<b>').replace(/\u0002/g,'</b>');
+function handActs(st,s,c){
+ const a=[],me=st.players[s];
+ if(idle(st,s)){
+  if(c.type==='gear')a.push(['equip','Надеть','','hot']);
+  if(c.type==='race'||c.type==='class')a.push(['become','Стать','','hot']);
+  if(c.type==='level'&&me.level<9)a.push(['lvl','+1 уровень','','hot']);
+  if(c.type==='monster'&&st.phase==='afterDoor')a.push(['fight','Драться','','hot']);
+  if(c.type==='curse')st.players.forEach((p,i)=>{if(i!==s)a.push(['curse','На '+p.name.split(' ')[0],i])});
+  if(c.v)a.push(['sell','Продать '+(has(me,'gob')?Math.round(c.v*1.5/50)*50:c.v)]);
+ }
+ if(inFight(st,s)){
+  if(c.type==='shot')a.push(['shot',`Себе +${c.b+(has(me,'cook')?2:0)}`,'','hot']);
+  if(c.type==='dice'&&c.dice==='luck')a.push(['luck','Бросить себе','','hot']);
+  if(c.type==='mod')a.push(['mod','На монстра','','hot']);
+  if(c.type==='escape')a.push(['esc','Смыться','','hot']);
+  if(has(me,'bard')&&st.F.bs<3)a.push(['song','Спеть: +2']);
+ }
+ if(meddle(st,s)){
+  if(c.type==='shot')a.push(['shot',`Монстру +${c.b+(has(me,'cook')?2:0)}`,'','hot']);
+  if(c.type==='dice'&&c.dice==='luck')a.push(['luck','Бросить монстру','','hot']);
+  if(c.type==='mod')a.push(['mod','На монстра','','hot']);
+ }
+ return a;
+}
+const PIPS={1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]};
+const FACE_T={1:'rotateY(0deg)',2:'rotateY(90deg)',3:'rotateX(90deg)',4:'rotateX(-90deg)',5:'rotateY(-90deg)',6:'rotateY(180deg)'};
+const SHOW={1:[0,0],2:[0,-90],3:[-90,0],4:[90,0],5:[0,90],6:[0,180]};
+let ROLLED=-1;
+function dieHTML(ro){
+ if(!ro)return'';
+ const anim=ro.id!==ROLLED;ROLLED=ro.id;
+ const[rx,ry]=SHOW[ro.v];
+ const faces=[1,2,3,4,5,6].map(v=>`<div class="face f${v}" style="transform:${FACE_T[v]} translateZ(35px)">${Array.from({length:9},(_,i)=>`<span class="${PIPS[v].includes(i)?'p':''}"></span>`).join('')}</div>`).join('');
+ const res=ro.ok===true?'удалось!':ro.ok===false?'не вышло':'';
+ return `<div class="dicebox"><div class="scene"><div class="die${anim?' anim':''}" style="--rx:${rx}deg;--ry:${ry}deg">${faces}</div></div><div class="dres">${esc(ro.who)}: ${esc(ro.label)}<br>выпало ${ro.v}${res?', '+res:''}</div></div>`;
+}
+function fightView(st,s){
+ const F=st.F,p=st.players[F.pi],h=heroPow(F,st),m=monPow(F,st),w=h>m;
+ const heroes=esc(p.name)+(F.helper!=null&&st.players[F.helper]?' + '+esc(st.players[F.helper].name):'');
+ let ctrl='';
+ if(inFight(st,s)){
+  const ask=st.players.map((x,i)=>i).filter(i=>i!==s&&!F.asked.includes(i)&&F.helper==null).map(i=>`<button data-a="ask" data-t="${i}">Позвать: ${esc(st.players[i].name)}</button>`).join('');
+  const need=has(p,'cat')?4:5;
+  ctrl=`<div class="row"><button class="go" data-a="win" ${w?'':'disabled'}>Победить</button><button data-a="run">Бежать (кубик ${need}+)</button>${F.mon.chill&&p.level<=F.mon.chill?'<button data-a="chill">Пройти мимо</button>':''}</div>${ask?`<div class="row">${ask}</div>`:''}<p>${w?'Ты сильнее. Бей, пока никто не подсунул монстру усилитель.':'Монстр сильнее. Сыграй разовые карты, позови помощь или беги.'}</p>`;
+ }else if(asked(st,s)){
+  ctrl=`<p>${esc(st.players[st.win.from]?st.players[st.win.from].name:'')} просит тебя о помощи. Твоя доля: ${st.win.share} сокр. Уровней помощнику не дают${has(st.players[s],'elf')?', но тебе как эльфу +1':''}.</p><div class="row"><button class="go" data-a="helpYes">Помочь</button><button data-a="pass">Отказать</button></div>`;
+ }else if(meddle(st,s)&&st.win){
+  ctrl=`<p>Можешь подгадить: кидай усилители, зелья и кубики удачи из руки на монстра.</p><div class="row"><button class="go" data-a="pass">${w?'Пусть бьёт':'Готово'}</button></div>`;
+ }else if(meddle(st,s)){
+  ctrl='<p>Это бой другого игрока. Можешь кинуть на монстра карты из руки.</p>';
+ }else if(st.win){ctrl='<p>Ждём решения других игроков…</p>'}
+ const vb=vsB(F,st);
+ const mods=F.mods.map(x=>`<span class="chip">${esc(x.n)} ${x.b>0?'+':''}${x.b}</span>`).join('')+(F.mB?`<span class="chip">зелья +${F.mB}</span>`:'')+(vb?`<span class="chip">особенность ${vb>0?'+':''}${vb}</span>`:'');
+ const flip=F.mon.id!==FLIPPED;FLIPPED=F.mon.id;
+ return `<h2>${heroes} против «${esc(F.mon.n)}»</h2>
+ <div class="vs"><div class="side"><span class="score ${w?'win':'lose'}">${h}</span><span class="stat">герои${F.pB?`, бонусы +${F.pB}`:''}${p.hiccup?', икота −3':''}</span></div>
+ ${cardHTML(F.mon,[],flip)}
+ <div class="side"><span class="score">${m}</span><span class="stat">монстр, награда ${F.mon.lv} ур. и ${monTr(F)} сокр.</span><div class="chips">${mods}</div></div></div>${dieHTML(st.roll)}${ctrl}`;
+}
+function arenaView(st,s){
+ if(st.F)return fightView(st,s);
+ let rv='';if(st.reveal){const f=st.reveal.id!==FLIPPED;FLIPPED=st.reveal.id;rv=cardHTML(st.reveal,[],f)}
+ const die=dieHTML(st.roll);
+ if(st.cur!==s)return `<h2>Ходит ${esc(st.players[st.cur].name)}</h2>${rv}${die}<p>Смотри журнал. Когда кто-то полезет в бой, сможешь ему помешать.</p>`;
+ if(st.phase==='start')return `<h2>Твой ход</h2>${die}<p>Надень вещи, стань расой или классом, продай лишнее. Потом выбивай дверь.</p><button class="go" data-a="kick">Выбить дверь</button>`;
+ if(st.phase==='afterDoor')return `<h2>${st.reveal&&st.reveal.type==='curse'?'Проклятие сработало':'Монстра за дверью нет'}</h2>${rv}${die}<p>Подерись с монстром из руки (кнопка «Драться» на карте) или обшарь комнату.</p><div class="row"><button class="go" data-a="loot">Обшарить комнату</button></div>`;
+ return `<h2>Ход почти окончен</h2>${die}<p>Можно ещё надеть вещи или продать что-то. Лишние карты сверх лимита уйдут самому слабому.</p><button class="go" data-a="end">Закончить ход</button>`;
+}
+const rcChips=p=>(p.race?`<span class="chip rc">${esc(p.race.n)}</span>`:'')+(p.cls?`<span class="chip rc">${esc(p.cls.n)}</span>`:'');
+function render(){
+ const client=NET&&!NET.host&&NET.started;
+ const st=client?V:S;
+ if(!st){$('opps').innerHTML='';$('arena').innerHTML='<h2>Хапуги</h2><p>Выбери режим игры в меню.</p><button class="go" data-a="menu">Открыть меню</button>';$('me').innerHTML='';$('hand').innerHTML='';$('log').innerHTML='';$('decks').innerHTML='';$('over').hidden=true;return}
+ const seat=client?NET.seat:0,spect=client&&seat<0,s=spect?0:seat,as=spect?-9:s;
+ $('mode').textContent=NET?(NET.host?'Хозяин комнаты ':'Гость комнаты ')+NET.code.toUpperCase():'Одиночная игра';
+ const me=st.players[s];
+ const order=[1,2,3].map(k=>(s+k)%4);
+ $('opps').innerHTML=order.map(i=>{const p=st.players[i];return `<div class="opp ${st.cur===i?'now':''}"><div class="pn"><span>${esc(p.name)}</span><span class="lv">ур. ${p.level}</span></div><div class="stat">Сила ${pow(p)}${p.hiccup?' (икает)':''} · ${p.gold} зол. · карт: ${p.hand.length}${p.kind==='bot'?' · бот':''}</div><div class="chips">${rcChips(p)}${p.gear.map(g=>`<span class="chip">${esc(g.n)} +${g.b}</span>`).join('')||(p.race||p.cls?'':'<span class="stat">без вещей</span>')}</div></div>`}).join('');
+ const dl=client?st.dl:st.door.length,tl=client?st.tl:st.tre.length;
+ $('decks').innerHTML=`<div class="back door"><span>Двери<small>${dl} карт</small></span></div><div class="back tre"><span>Сокровища<small>${tl} карт</small></span></div>`;
+ $('arena').innerHTML=(NET&&NET.hostGone&&NET.started?'<p>Хозяин комнаты вышел. Игра остановлена.</p>':'')+(spect?'<p>Ты зритель: места за столом заняты.</p>':'')+arenaView(st,as);
+ $('log').innerHTML=st.log.map(l=>`<div>${fmt(l)}</div>`).join('');
+ const sellBtn=g=>!spect&&idle(st,s)&&g.v?[['sell','Продать '+(has(me,'gob')?Math.round(g.v*1.5/50)*50:g.v)]]:[];
+ const slots=['head','armor','feet','hand'].map(sl=>{const gs=me.gear.filter(g=>g.slot===sl);return gs.length?gs.map(g=>cardHTML(g,sellBtn(g))).join(''):`<div class="slot">${sl==='hand'?'Руки':SLOT[sl]}: пусто</div>`}).join('');
+ const rc=(me.race?cardHTML(me.race):'<div class="slot">Раса: нет</div>')+(me.cls?cardHTML(me.cls):'<div class="slot">Класс: нет</div>');
+ const meEl=$('me');meEl.className='me'+(st.cur===s?' now':'');
+ meEl.innerHTML=`<div class="mehead"><span class="big">${esc(me.name)}${spect?'':' (ты)'}</span><span class="big lv">Уровень ${me.level}</span><span class="big">Сила ${pow(me)}</span><span class="stat">${me.gold} зол. (1000 = +1 уровень) · лимит руки ${lim(me)}${me.hiccup?' · икота: −3 в следующем бою':''}</span></div><div class="slots">${rc}${slots}</div>`;
+ $('hand').innerHTML=spect?'<div class="empty">Ты смотришь партию.</div>':me.hand.length?me.hand.map(c=>cardHTML(c,handActs(st,s,c))).join(''):'<div class="empty">Рука пуста. Выбей дверь, может, что-то найдётся.</div>';
+ const ov=$('over');
+ if(st.over>=0&&st.players[st.over]){const wn=st.players[st.over],mine=st.over===s&&!spect;ov.hidden=false;ov.innerHTML=`<div><h2>${mine?'Победа!':esc(wn.name)+' побеждает'}</h2><p>${mine?'Десятый уровень! Ты главный хапуга подземелья.':'Добрался до 10 уровня первым. Подземелье помнит твой позор.'}</p>${client?'<p class="stat">Новую партию запускает хозяин комнаты.</p>':'<button class="go" data-a="new">Сыграть ещё</button>'}</div>`}
+ else ov.hidden=true;
+ publish();
+}
+
+document.addEventListener('click',e=>{
+ const b=e.target.closest('[data-a]');if(!b||b.disabled)return;
+ const a=b.dataset.a,id=b.dataset.id===undefined?NaN:+b.dataset.id,t=b.dataset.t===''||b.dataset.t===undefined?null:+b.dataset.t;
+ if(a==='solo'){const n=nickVal();saveNick(n);(NET?leaveRoom(true):Promise.resolve()).then(()=>{LOBBY=null;renderLobby();newGame([{name:n,kind:'me'},...BOTS.map(x=>({name:x,kind:'bot'}))])});return}
+ if(a==='create'){const ab='abcdefghjkmnpqrstuvwxyz23456789';let c='';for(let i=0;i<4;i++)c+=ab[rnd(ab.length)];openRoom(c,true);return}
+ if(a==='joincode'){const c=($('code').value||'').trim().toLowerCase().replace(/[^a-z0-9]/g,'');if(c.length<3){LOBBY={view:'menu',err:'Введи код комнаты.'};renderLobby();return}openRoom(c,false);return}
+ if(a==='start'&&NET&&NET.host){hostStart();return}
+ if(a==='leave'){leaveRoom();return}
+ if(a==='menu'){LOBBY=NET&&!NET.started?{view:'room'}:{view:'menu'};renderLobby();return}
+ if(a==='close'){LOBBY=null;renderLobby();return}
+ if(a==='new'){if(NET&&!NET.host)return;if(SEATS)newGame(SEATS);return}
+ if(NET&&!NET.host){if(NET.started&&NET.seat>=0)sendAct(a,id,t);return}
+ if(S)act(0,a,id,t);
+});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='code'){const b=document.querySelector('[data-a="joincode"]');if(b)b.click()}});
+window.HAPUGI={card,TOTAL,NB};
+renderLobby();render();
+}
+</script>
+</body>
+</html>
